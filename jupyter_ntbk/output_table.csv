@@ -1,0 +1,5 @@
+Vin (Vac),Typ (A),Current (mA),Result
+110,0.95,950.0,PASS
+110,0.9,900.0,PASS
+110,0.9,900.0,PASS
+110,0.85,850.0,PASS

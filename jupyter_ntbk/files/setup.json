@@ -1,47 +1,127 @@
 {
-  "Example": {
-    "test_name": "NAME",
-    "specification": {
-      "spec_type": "xxx",
-      "spec_val": 0.0,
-      "spec_unit": "X",
-      "spec_notes": null
-    },
-    "condition": {
-      "condition_type": "XXX",
-      "condition_units": "X",
-      "condition_interval": [0.0, 0.0, 0.0],
-      "condition_notes": null
+  "": {
+    "": {
+      "specifications": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      }, 
+      "conditions": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      },
+      "notes": ""
     }
   },
-  "Input Current": {
-    "test_name": "Input Current",
-    "specification": {
-      "spec_type": ["typ", "typ"],
-      "spec_val": [2.3, 0.9],
-      "spec_unit": "A",
-      "spec_notes": null
-    },
-    "conditions": {
-      "condition_type": "Input Voltage",
-      "condition_units": "Vac",
-      "condition_interval": [99, 277],
-      "condition_notes": "full load"
+
+  "Input": {
+    "Input Current": {
+      "specifications": {
+        "types": ["typ", "typ"],
+        "values": [2.3, 0.9],
+        "unit": "A",
+        "notes": ""
+      }, 
+      "conditions": {
+        "types": ["Input Voltage"],
+        "values": [110, 277],
+        "unit": "Vac",
+        "notes": ""
+      },
+      "notes": "full load"
     }
   },
-  "No Load Input Power": {
-    "test_name": "No Load Input Power",
-    "specification": {
-      "spec_type": ["max"],
-      "spec_val": [150],
-      "spec_unit": "mW",
-      "spec_notes": null
-    },
-    "conditions": {
-      "condition_type": "Input Voltage",
-      "condition_units": "Vac",
-      "condition_interval": [277],
-      "condition_notes": "full load"
+
+  "Output": {
+    "": {
+      "specifications": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      }, 
+      "conditions": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      },
+      "notes": ""
+    }
+  },
+
+  "Protections": {
+    "": {
+      "specifications": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      }, 
+      "conditions": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      },
+      "notes": ""
+    }
+  },
+
+  "Environmental": {
+    "": {
+      "specifications": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      }, 
+      "conditions": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      },
+      "notes": ""
+    }
+  },
+
+  "Safety": {
+    "": {
+      "specifications": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      }, 
+      "conditions": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      },
+      "notes": ""
+    }
+  },
+
+  "EMC": {
+    "": {
+      "specifications": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      }, 
+      "conditions": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      },
+      "notes": ""
     }
   }
 }

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .test-form {
+      margin: 20px;
+    }
+    .input-group {
+      margin-bottom: 10px;
+    }
+    .button-container {
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-form">
+    <h1>Add New Test</h1>
+    <div class="input-group">
+      <label for="category">Category</label>
+      <select id="category">
+        <option value="Input">Input</option>
+        <option value="Output">Output</option>
+        <option value="Protections">Protections</option>
+        <option value="Environmental">Environmental</option>
+        <option value="Safety">Safety</option>
+        <option value="EMC">EMC</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <label for="testName">Test Name</label>
+      <input type="text" id="testName">
+    </div>
+
+    <div class="input-group">
+      <label for="specType">Specification Type (comma separated)</label>
+      <input type="text" id="specType">
+    </div>
+
+    <div class="input-group">
+      <label for="specVal">Specification Values (comma separated)</label>
+      <input type="text" id="specVal">
+    </div>
+
+    <div class="input-group">
+      <label for="specUnit">Specification Unit</label>
+      <input type="text" id="specUnit">
+    </div>
+
+    <div class="input-group">
+      <label for="conditionType">Condition Type (comma separated)</label>
+      <input type="text" id="conditionType">
+    </div>
+
+    <div class="input-group">
+      <label for="conditionVal">Condition Values (comma separated)</label>
+      <input type="text" id="conditionVal">
+    </div>
+
+    <div class="input-group">
+      <label for="conditionUnit">Condition Unit</label>
+      <input type="text" id="conditionUnit">
+    </div>
+
+    <!-- Button Container for Aligning the Buttons -->
+    <div class="button-container">
+      <button id="generateJson">Generate JSON</button>
+      <button id="saveJson">Save JSON</button>
+    </div>
+
+    <h2>Generated JSON</h2>
+    <pre id="jsonOutput"></pre>
+  </div>
+
+  <script>
+    // Generate JSON functionality
+    document.getElementById('generateJson').addEventListener('click', function() {
+      const category = document.getElementById('category').value;
+      const testName = document.getElementById('testName').value;
+      const specType = document.getElementById('specType').value.split(',');
+      const specVal = document.getElementById('specVal').value.split(',').map(Number);
+      const specUnit = document.getElementById('specUnit').value;
+      const conditionType = document.getElementById('conditionType').value.split(',');
+      const conditionVal = document.getElementById('conditionVal').value.split(',').map(Number);
+      const conditionUnit = document.getElementById('conditionUnit').value;
+
+      const newTest = {
+        [testName]: {
+          "specifications": {
+            "types": specType,
+            "values": specVal,
+            "unit": specUnit,
+            "notes": ""
+          },
+          "conditions": {
+            "types": conditionType,
+            "values": conditionVal,
+            "unit": conditionUnit
+          },
+          "notes": ""
+        }
+      };
+
+      const jsonObj = {};
+      jsonObj[category] = newTest;
+
+      // Display the generated JSON in the <pre> element
+      document.getElementById('jsonOutput').textContent = JSON.stringify(jsonObj, null, 2);
+    });
+
+    // Save JSON functionality
+    document.getElementById('saveJson').addEventListener('click', function() {
+      const jsonData = document.getElementById('jsonOutput').textContent;
+
+      if (jsonData) {
+        try {
+          // Parse the content to make sure it's valid JSON
+          const parsedData = JSON.parse(jsonData);
+
+          // Convert JSON to string again to download it
+          const jsonString = JSON.stringify(parsedData, null, 4); // Pretty format
+
+          // Create a blob from the JSON string
+          const blob = new Blob([jsonString], { type: 'application/json' });
+
+          // Create an anchor element to download the file
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'test_data.json'; // File name for the download
+          link.click(); // Programmatically trigger the download
+        } catch (e) {
+          alert("Invalid JSON data! Please generate the JSON first.");
+        }
+      } else {
+        alert("Please generate the JSON first before saving.");
+      }
+    });
+  </script>
+
+</body>
+</html>
