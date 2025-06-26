@@ -1,0 +1,127 @@
+{
+  "": {
+    "": {
+      "specifications": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      }, 
+      "conditions": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      },
+      "notes": ""
+    }
+  },
+
+  "Input": {
+    "Input Current": {
+      "specifications": {
+        "types": ["typ", "typ"],
+        "values": [2.3, 0.9],
+        "unit": "A",
+        "notes": ""
+      }, 
+      "conditions": {
+        "types": ["Input Voltage"],
+        "values": [110, 277],
+        "unit": "Vac",
+        "notes": ""
+      },
+      "notes": "full load"
+    }
+  },
+
+  "Output": {
+    "": {
+      "specifications": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      }, 
+      "conditions": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      },
+      "notes": ""
+    }
+  },
+
+  "Protections": {
+    "": {
+      "specifications": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      }, 
+      "conditions": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      },
+      "notes": ""
+    }
+  },
+
+  "Environmental": {
+    "": {
+      "specifications": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      }, 
+      "conditions": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      },
+      "notes": ""
+    }
+  },
+
+  "Safety": {
+    "": {
+      "specifications": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      }, 
+      "conditions": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      },
+      "notes": ""
+    }
+  },
+
+  "EMC": {
+    "": {
+      "specifications": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      }, 
+      "conditions": {
+        "types": [],
+        "values": [],
+        "unit": "",
+        "notes": ""
+      },
+      "notes": ""
+    }
+  }
+}
