@@ -1,0 +1,32 @@
+input
+	input_current
+	no_load_input_power
+	inrush_current
+	efficiency
+	power_factor
+output
+	turn_on_delay
+	output_voltage_tolerance
+	load_regulation
+	line_regulation
+	ripple
+	transient_response
+	startup_overshoot
+	hold_up_time
+	aux_output_voltage_regulation
+	aux_output_current
+protections
+	over_voltage_protection
+	over_current_protection
+	short_circuit_protection
+safety
+	dielectric_withstand_voltage
+	output_touch_current
+	earth_leakage_current
+emc
+	conducted_emissions
+	radiated_emissions
+	electrostatic_discharge_immunity
+	EFT_burst_immunity
+	line_surge_immunity
+	voltage_dip_immunity

@@ -1,0 +1,53 @@
+{
+  "cover": {
+    "model_number": "",
+    "model_name": "",
+    "spec1": {
+      "values": [
+        ""
+      ],
+      "descriptions": [
+        ""
+      ]
+    },
+    "tested_by": {
+      "name": "",
+      "start_date": "",
+      "end_date": ""
+    },
+    "reviewed_by": {
+      "name": "",
+      "start_date": "",
+      "end_date": ""
+    }
+  },
+  "tests": {
+    "test_category":
+      {
+        "test001": {
+            "specifications": 
+            {
+                "type": "",
+                "values": [
+                    ""
+                ],
+                "unit": "",
+                "notes": ""
+            },
+            "conditions":
+            {
+                "type": "",
+                "values": [
+                    ""
+                ],
+                "unit": "",
+                "notes": ""
+            },
+            "results": {
+
+            },
+            "notes": ""
+        }
+      }
+  }
+}

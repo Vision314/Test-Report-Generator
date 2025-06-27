@@ -1,0 +1,24 @@
+{
+  "cover": {
+    "model_number": "",
+    "model_name": "",
+    "specifications": [],
+    "tested_by": {
+      "name": "",
+      "start_date": "",
+      "end_date": ""
+    },
+    "reviewed_by": {
+      "name": "",
+      "start_date": "",
+      "end_date": ""
+    }
+  },
+  "tests": {
+    "input": [],
+    "output": [],
+    "protections": [],
+    "safety": [],
+    "emc": []
+  }
+}

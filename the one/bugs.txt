@@ -1,0 +1,10 @@
+bugs:
+
+1. make sure anything you change gets saved when you switch to a different tab, menu, report, or test
+
+2. when you create a new test
+	a) open the window in the middle of the screen
+	b) place the cursor into the category box
+	c) after im done typing the information, make it so i can just press enter to make the new test
+
+3. 

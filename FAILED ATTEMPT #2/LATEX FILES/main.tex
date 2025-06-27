@@ -1,0 +1,71 @@
+\documentclass[12pt]{article}
+
+% === Packages ===
+\usepackage{graphicx}       % For logo
+\usepackage{color, xcolor}  % For red bar
+\usepackage{array}          % For table formatting
+\usepackage{colortbl}       % To color table rows
+\usepackage{longtable}      % For large tables
+\usepackage{geometry}       % Page margins
+\usepackage{multicol,multirow} % Merged cells
+\usepackage{titlesec}       % Title customization
+\usepackage{titling}        % Remove default title page
+\usepackage{setspace}       % Line spacing
+
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+\definecolor{customred}{HTML}{ED1D26}
+
+% === Page setup ===
+\geometry{margin=1in}
+\setlength{\parindent}{0pt}
+\setstretch{1.2}
+
+\begin{document}
+
+% === Custom Title Page ===
+\begin{titlepage}
+
+\noindent
+
+\begin{minipage}[c][1in][c]{1in}
+        \includegraphics[width=42.6px, height=38.4px]{images/globtek_logo_large.png} % your logo here
+    \end{minipage}%
+    \begin{minipage}[c][1in][c]{\dimexpr\textwidth-1in\relax}
+        \colorbox{customred}{%
+            \parbox[b][1in][c]{\linewidth}{%
+                \hfill
+                \begin{minipage}[c][1in][c]{0.95\linewidth}
+                    \raggedleft
+                    \textcolor{white}{\textbf{[Model Number]}\\
+                    \textbf{[Model Name]}\\
+                    \textit{Engineering Test Report}}
+                \end{minipage}
+            }
+        }
+\end{minipage}
+
+
+\vspace{1cm} % Space between banner and tables
+
+
+
+% === Include the 3 tables ===
+
+\begin{center}
+\input{tables/cover_page/table1}
+\vspace{0.5cm}
+
+\input{tables/cover_page/table2}
+\vspace{0.5cm}
+
+\input{tables/cover_page/table3}
+
+\end{center}
+\end{titlepage}
+
+
+\input{tables/input_tests/001_input_current}
+
+
+\end{document}
