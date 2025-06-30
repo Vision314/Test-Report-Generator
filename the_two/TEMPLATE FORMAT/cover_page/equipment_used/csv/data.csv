@@ -1,0 +1,17 @@
+Equipment Type	Man.	Model	Description	S/N	Last Cal.	Cal. Due
+Oscilloscope	Siglent	SDS 2104 X	"100MHz, 4-ch, 2GSa/s"	DS1ZA201204643	44322	45443
+Oscilloscope	Rigol	DS1054Z	"50MHz, 4-ch, 1GSa/s"	DS1ZA201204643	44932	46758
+Current Probe	AEMC	SL261	"0 - 70A RMS, DC - 100KHz "	114971BJDV	44322	45443
+Differential Probe	Probemaster	4232	"25MHz, 700V"	39182	44322	45443
+Differential Probe	Micsig	DP10013	"100MHz, 1300V"	900002838	44932	46758
+Electronic Load	Array	3711A	"300W, 0-30A, 0-360V"	A06BF01054	44322	45443
+Electronic Load	Maynuo	M9714	"1200W, 0-240A, 0-150V"	9.0041E+16	44932	46758
+Power Meter	GWInstek	GPM-8212	"True RMS, 0 - 640V, 0 - 20A, ±0.1%"	C220023	44322	45443
+Power Analyzer	Yokogawa	WT3000	"Power factor , harmonics,  ±0.02%"	91R225637	44932	46758
+Multimeter	Agilent	34401A	"6.5 digit, 0.0035% DC / 0.06% AC"	US36110981	44322	45443
+Multimeter	HP	3478A	"5.5 digit, 0.025% DC / 1.1% AC"	2911A63854	44932	46758
+Multimeter	Fluke	8050A	"4.5 digit, 0.03% DC / 1.0% AC"	3740310	44322	45443
+Thermal Chamber	ESPEC	ECT-1	"Temp. controlled, -75 to +180C"	0508910-03	44322	45443
+Datalogger	Rigol	M300	Datalogger mainfraim with TC card	MM3A165350294	44932	46758
+AC Source	Chroma	61503	"1500VA, Arbritrary waveform"	ABL000000073	44322	45443
+Inverter	Duracell	DRINV400	"Inverter 400W Peak, Modified Sine"	N/A	N/A	N/A
