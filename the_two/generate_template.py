@@ -1,5 +1,6 @@
 import os
 import csv
+import pandas as pd
 
 structure = {
     "cover_page": [
@@ -48,11 +49,9 @@ structure = {
 }
 
 def create_csv_file(filepath):
-    with open(filepath, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.writer(f)
-        # Optional: write some placeholder headers or rows
-        # writer.writerow(['Column1', 'Column2', 'Column3'])
-        # writer.writerow(['Example1', 'Example2', 'Example3'])
+    # make a csv
+    df = pd.DataFrame({})
+    df.to_csv(filepath, index=False)
 
 def create_structure(base_path=r'Test-Report-Generator\the_two\TEMPLATE FORMAT'):
     for category, tests in structure.items():

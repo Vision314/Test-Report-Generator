@@ -46,23 +46,22 @@ root.geometry('600x400')
 # for item in col_a:
 #     my_listbox.insert(END, item.value)
 
-check_btn_vars = []
 
 
-def insert_check_btn(_range):
+# def insert_check_btn(_range):
 
-    for r in range(_range):
+#     for r in range(_range):
 
-        var = tk.IntVar()
+#         var = tk.IntVar()
 
-        check_btn_vars.append(var)
-        check_btn = tk.Checkbutton(text_area, text=f'Item - {r}',
-                                   variable=var)
+#         check_btn_vars.append(var)
+#         check_btn = tk.Checkbutton(text_area, text=f'Item - {r}',
+#                                    variable=var)
 
-        text_area.window_create('end', window=check_btn)
-        text_area.insert('end', '\n')
+#         text_area.window_create('end', window=check_btn)
+#         text_area.insert('end', '\n')
 
-    text_area.configure(state=tk.DISABLED)
+#     text_area.configure(state=tk.DISABLED)
 
 
 fm = tk.Frame(root)
@@ -80,15 +79,33 @@ fm.pack()
 
 
 
-insert_check_btn(50)
+# insert_check_btn(50)
+
+path = r"C:\Users\enfxm\Desktop\Python Testing\Test Report Template\Test-Report-Generator\the_two\TEMPLATE FORMAT\cover_page\equipment_used\csv\data.csv"
+check_btn_vars = []
+
+
+# make a checklist button for each row in the csv file, the name of the button should be col1 - col2 - col3 - col4 - col5 - col6 - col7
+df = pd.read_csv(path)
+for index, row in df.iterrows():
+    var = tk.IntVar()
+    check_btn_vars.append(var)
+    
+    # Create a string for the button text
+    button_text = ' - '.join(str(row[col]) for col in df.columns)
+    
+    check_btn = tk.Checkbutton(text_area, text=button_text, variable=var)
+    
+    text_area.window_create('end', window=check_btn)
+    text_area.insert('end', '\n')
 
 
 
-file_path = r"C:\Users\enfxm\Desktop\Python Testing\Test Report Template\Test-Report-Generator\the_two\TEMPLATE FORMAT\cover_page\equipment_used\csv\data.csv"
 
-# Try common Windows-compatible encoding
-equipment_used_df = pd.read_csv(file_path)
+text_area.configure(state=tk.DISABLED)
 
-print(equipment_used_df.head(5))
+
+
+
 
 root.mainloop()
