@@ -162,20 +162,62 @@ class ScrollableFrame(tk.Frame):
     def __init__(self, container, *args, **kwargs):
         super().__init__(container, *args, **kwargs)
 
-        canvas = tk.Canvas(self)
-        scrollbar = tk.Scrollbar(self, orient="vertical", command=canvas.yview)
-        self.scrollable_frame = tk.Frame(canvas)
+        self.canvas = tk.Canvas(self)
+        scrollbar = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
+        self.scrollable_frame = tk.Frame(self.canvas)
 
         self.scrollable_frame.bind(
             "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+            lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all"))
         )
 
-        canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
+        self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+        self.canvas.configure(yscrollcommand=scrollbar.set)
 
-        canvas.pack(side="left", fill="both", expand=True)
+        # Bind mouse wheel events to canvas
+        self.canvas.bind("<MouseWheel>", self._on_mousewheel)
+        self.canvas.bind("<Button-4>", self._on_mousewheel)  # Linux
+        self.canvas.bind("<Button-5>", self._on_mousewheel)  # Linux
+        
+        # Make canvas focusable and bind focus events
+        self.canvas.focus_set()
+        self.canvas.bind("<Enter>", lambda e: self.canvas.focus_set())
+        
+        # Bind mouse wheel to the scrollable frame itself
+        self.scrollable_frame.bind("<MouseWheel>", self._on_mousewheel)
+        self.scrollable_frame.bind("<Button-4>", self._on_mousewheel)
+        self.scrollable_frame.bind("<Button-5>", self._on_mousewheel)
+        
+        self.canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
+    
+    def _on_mousewheel(self, event):
+        """Handle mouse wheel scrolling"""
+        # Windows and MacOS
+        if hasattr(event, 'delta'):
+            delta = event.delta
+        else:
+            # Linux
+            if event.num == 4:
+                delta = 120
+            elif event.num == 5:
+                delta = -120
+            else:
+                return
+        
+        self.canvas.yview_scroll(int(-1 * (delta / 120)), "units")
+    
+    def bind_mousewheel_to_children(self, widget):
+        """Recursively bind mouse wheel events to all child widgets"""
+        try:
+            widget.bind("<MouseWheel>", self._on_mousewheel)
+            widget.bind("<Button-4>", self._on_mousewheel)  # Linux
+            widget.bind("<Button-5>", self._on_mousewheel)  # Linux
+        except:
+            pass  # Some widgets might not support binding
+        
+        for child in widget.winfo_children():
+            self.bind_mousewheel_to_children(child)
 
 class View(tk.Tk):
     def __init__(self, model_class=None):
@@ -275,7 +317,7 @@ class View(tk.Tk):
         toolbar = ttk.Frame(center_frame)
         ttk.Label(toolbar, text="Test Data Editor", font=("Arial", 10, "bold")).pack(side=tk.LEFT, padx=5)
         ttk.Button(toolbar, text="Save", command=self.save_current).pack(side=tk.RIGHT, padx=2)
-        ttk.Button(toolbar, text="Add Section", command=self.add_section).pack(side=tk.RIGHT, padx=2)
+        ttk.Button(toolbar, text="Add Table", command=self.add_section).pack(side=tk.RIGHT, padx=2)
         toolbar.pack(fill=tk.X, pady=(0, 5))
         
         # Scrollable frame for multiple sheets
@@ -317,22 +359,90 @@ class View(tk.Tk):
 
     def create_sheet_section(self, parent, title, subtitle, data, section_name):
         """Create a titled sheet section in the scrollable area"""
-        # Title
-        title_label = tk.Label(parent, text=title, font=("Arial", 12, "bold"))
-        title_label.pack(anchor="w", pady=(15, 2), padx=10)
+        # Title frame with buttons
+        title_frame = tk.Frame(parent)
+        title_frame.pack(fill=tk.X, pady=(10, 2), padx=5)  # Reduced padding
+        
+        # Title label on the left
+        title_label = tk.Label(title_frame, text=title, font=("Arial", 12, "bold"))
+        title_label.pack(side=tk.LEFT)
+        
+        # Buttons on the right
+        button_frame = tk.Frame(title_frame)
+        button_frame.pack(side=tk.RIGHT)
+        
+        # Auto-size button (leftmost)
+        autosize_button = tk.Button(
+            button_frame,
+            text="Auto-size",
+            font=("Arial", 8),
+            bg="#d4e6f1",
+            relief=tk.FLAT,
+            command=lambda: self.resize_sheet_to_content(section_name)
+        )
+        autosize_button.pack(side=tk.RIGHT, padx=(5, 5))
+        
+        # Add Column button
+        col_button = tk.Button(
+            button_frame, 
+            text="+ Column", 
+            font=("Arial", 8), 
+            bg="#e1e1e1", 
+            relief=tk.FLAT,
+            command=lambda: self.add_column_to_sheet(section_name)
+        )
+        col_button.pack(side=tk.RIGHT, padx=(5, 0))
+        
+        # Add Row button
+        row_button = tk.Button(
+            button_frame, 
+            text="+ Row", 
+            font=("Arial", 8), 
+            bg="#e1e1e1", 
+            relief=tk.FLAT,
+            command=lambda: self.add_row_to_sheet(section_name)
+        )
+        row_button.pack(side=tk.RIGHT, padx=(5, 5))
         
         # Subtitle
         if subtitle:
             subtitle_label = tk.Label(parent, text=subtitle, font=("Arial", 9, "italic"), fg="gray")
-            subtitle_label.pack(anchor="w", pady=(0, 5), padx=10)
+            subtitle_label.pack(anchor="w", pady=(0, 3), padx=5)  # Reduced padding
         
-        # Sheet
-        sheet = Sheet(parent, data=data, width=800, height=200)
+        # Sheet with calculated dimensions
+        sheet_width, sheet_height = self.calculate_sheet_dimensions(data)
+        print(f"DEBUG: Creating sheet '{section_name}' with dimensions {sheet_width}x{sheet_height}")
+        sheet = Sheet(parent, data=data, width=sheet_width, height=sheet_height)
         sheet.enable_bindings()
-        sheet.pack(pady=(0, 10), padx=10, fill=tk.X)
+        
+        # Configure sheet to be more compact
+        try:
+            sheet.hide_vertical_scrollbar()
+            sheet.hide_horizontal_scrollbar()
+            # Set tighter internal padding if available
+            if hasattr(sheet, 'set_options'):
+                sheet.set_options(show_vertical_grid=True, show_horizontal_grid=True)
+        except:
+            pass  # Some versions might not have these methods
+        
+        sheet.pack(pady=(0, 5), padx=5, anchor="w")  # Reduced padding from (0,10), padx=10
+        
+        # After sheet is created, recalculate with actual dimensions
+        self.after(100, lambda: self.refine_sheet_dimensions(section_name))
+        
+        # Bind mouse wheel to sheet
+        try:
+            sheet.bind("<MouseWheel>", self.center_scrollable._on_mousewheel)
+            sheet.bind("<Button-4>", self.center_scrollable._on_mousewheel)  # Linux
+            sheet.bind("<Button-5>", self.center_scrollable._on_mousewheel)  # Linux
+        except:
+            pass
         
         # Store reference and bind save event
         self.current_sheets[section_name] = sheet
+        
+        # Bind automatic resizing events
+        self.bind_sheet_resize_events(sheet, section_name)
         
         # Bind sheet edit events to refresh equipment if this is equipment_used section
         if section_name == 'equipment_used':
@@ -342,7 +452,231 @@ class View(tk.Tk):
             sheet.bind("<Tab>", lambda e: self.on_equipment_sheet_changed())
             sheet.bind("<FocusOut>", lambda e: self.on_equipment_sheet_changed())
         
+        # Bind events for automatic resizing
+        self.bind_sheet_resize_events(sheet, section_name)
+        
         return sheet
+
+    def add_row_to_sheet(self, section_name):
+        """Add a row to the specified sheet"""
+        if section_name in self.current_sheets:
+            sheet = self.current_sheets[section_name]
+            # Insert a new empty row at the end
+            sheet.insert_row()
+            # Resize the sheet to fit new content
+            self.resize_sheet_to_content(section_name)
+            print(f"DEBUG: Added row to {section_name}")
+
+    def add_column_to_sheet(self, section_name):
+        """Add a column to the specified sheet"""
+        if section_name in self.current_sheets:
+            sheet = self.current_sheets[section_name]
+            # Insert a new empty column at the end
+            sheet.insert_column()
+            # Resize the sheet to fit new content
+            self.resize_sheet_to_content(section_name)
+            print(f"DEBUG: Added column to {section_name}")
+
+    def resize_sheet_to_content(self, section_name):
+        """Resize a sheet based on its current content"""
+        if section_name in self.current_sheets:
+            sheet = self.current_sheets[section_name]
+            
+            # First, auto-size columns and rows to fit content
+            try:
+                # Use tksheet's built-in method to size cells to text
+                sheet.set_all_cell_sizes_to_text()
+                print(f"DEBUG: Auto-sized cells to text for {section_name}")
+            except Exception as e:
+                print(f"DEBUG: Could not auto-size cells: {e}")
+            
+            # Get current data from the sheet
+            current_data = sheet.get_sheet_data()
+            # Calculate new dimensions using actual sheet measurements
+            new_width, new_height = self.calculate_sheet_dimensions_from_sheet(sheet, current_data)
+            # Apply new dimensions
+            sheet.config(width=new_width, height=new_height)
+            print(f"DEBUG: Resized {section_name} to {new_width}x{new_height}")
+
+    def calculate_sheet_dimensions_from_sheet(self, sheet, data):
+        """Calculate sheet dimensions using actual column widths and row heights"""
+        try:
+            if not data:
+                print("DEBUG: No data, using default size")
+                return 400, 150
+            
+            # Handle empty or all-empty rows
+            non_empty_rows = [row for row in data if row and any(str(cell).strip() for cell in row)]
+            if not non_empty_rows:
+                print("DEBUG: No non-empty rows, using minimal size")
+                return 300, 100
+            
+            num_rows = len(data)
+            num_cols = max(len(row) for row in data if row) if data else 1
+            
+            # Get actual column widths using proper tksheet methods
+            total_width = 0
+            try:
+                # Try to get all column widths at once
+                column_widths = sheet.get_column_widths()
+                if column_widths and len(column_widths) >= num_cols:
+                    total_width = sum(column_widths[:num_cols])
+                    print(f"DEBUG: Got column widths from get_column_widths(): {column_widths[:num_cols]}")
+                else:
+                    # Fall back to individual column width calls
+                    for col in range(num_cols):
+                        try:
+                            col_width = sheet.column_width(col)
+                            actual_width = col_width if col_width and col_width > 0 else 120
+                            total_width += actual_width
+                        except:
+                            total_width += 120  # Default width
+                    print(f"DEBUG: Got column widths individually, total: {total_width}")
+                
+                # Add minimal space for row index (reduce padding)
+                total_width += 40  # Reduced from 60 to 40
+            except Exception as e:
+                print(f"DEBUG: Error getting column widths: {e}")
+                # Fallback to estimated width
+                total_width = num_cols * 120 + 40
+            
+            # Get actual row heights using proper tksheet methods
+            total_height = 0
+            try:
+                # Try to get all row heights at once
+                row_heights = sheet.get_row_heights()
+                if row_heights and len(row_heights) >= num_rows:
+                    total_height = sum(row_heights[:num_rows])
+                    print(f"DEBUG: Got row heights from get_row_heights(): {row_heights[:num_rows]}")
+                else:
+                    # Fall back to individual row height calls
+                    for row in range(num_rows):
+                        try:
+                            r_height = sheet.row_height(row)
+                            actual_height = r_height if r_height and r_height > 0 else 20
+                            total_height += actual_height
+                        except:
+                            total_height += 20  # Default height
+                    print(f"DEBUG: Got row heights individually, total: {total_height}")
+                
+                # Add header height and padding
+                try:
+                    header_height = sheet.default_header_height if hasattr(sheet, 'default_header_height') else 25
+                    total_height += header_height
+                except:
+                    total_height += 25
+                
+                # Add minimal padding for borders (reduce padding)
+                total_height += 15  # Reduced from 30 to 15
+            except Exception as e:
+                print(f"DEBUG: Error getting row heights: {e}")
+                # Fallback to estimated height
+                total_height = (num_rows * 20) + 25 + 15
+            
+            # Apply reasonable limits with tighter bounds to prevent scrollbars
+            sheet_width = max(min(total_width, 1400), 150)  # Reduced min from 200 to 150
+            sheet_height = max(min(total_height, 500), 50)   # Reduced min from 70 to 50
+            
+            print(f"DEBUG: Calculated from sheet: {sheet_width}x{sheet_height} (cols: {num_cols}, rows: {num_rows})")
+            return sheet_width, sheet_height
+            
+        except Exception as e:
+            print(f"DEBUG: Error calculating from sheet, using fallback: {e}")
+            return self.calculate_sheet_dimensions(data)
+
+    def calculate_sheet_dimensions(self, data):
+        """Calculate appropriate sheet dimensions based on data"""
+        print(f"DEBUG: Calculating dimensions for data: {data}")
+        
+        if not data:
+            print("DEBUG: No data, using default size")
+            return 400, 150
+        
+        # Handle case where data is empty list or list of empty lists
+        non_empty_rows = [row for row in data if row and any(str(cell).strip() for cell in row)]
+        if not non_empty_rows:
+            print("DEBUG: Empty rows, using minimal size")
+            return 300, 100
+        
+        # Find the maximum number of columns across all rows
+        num_rows = len(data)
+        num_cols = max(len(row) for row in data if row) if data else 1
+        
+        print(f"DEBUG: Found {num_rows} rows, {num_cols} columns")
+        
+        # Calculate width based on columns (more generous sizing)
+        col_width = 120  # Increased from 80 to make columns wider
+        calculated_width = num_cols * col_width + 40  # Reduced padding from 80 to 40
+        sheet_width = max(min(calculated_width, 1400), 150)  # Tighter bounds
+        
+        # Calculate height based on rows (more compact sizing)
+        row_height = 20  # Reduced from 25 to make rows shorter
+        header_height = 30  # Header row height
+        calculated_height = (num_rows * row_height) + header_height + 5  # Reduced padding from 10 to 5
+        sheet_height = max(min(calculated_height, 500), 50)  # Tighter bounds
+        
+        print(f"DEBUG: Calculated dimensions: {sheet_width}x{sheet_height}")
+        return sheet_width, sheet_height
+
+    def bind_sheet_resize_events(self, sheet, section_name):
+        """Bind events to automatically resize sheet when content changes"""
+        # Bind to various sheet modification events
+        try:
+            # These events should trigger when the sheet structure changes
+            sheet.bind("<<SheetModified>>", lambda e: self.on_sheet_modified(section_name))
+            sheet.bind("<KeyPress-Delete>", lambda e: self.after(50, lambda: self.resize_sheet_to_content(section_name)))
+            sheet.bind("<Control-x>", lambda e: self.after(50, lambda: self.resize_sheet_to_content(section_name)))
+            sheet.bind("<Control-v>", lambda e: self.after(50, lambda: self.resize_sheet_to_content(section_name)))
+            
+            # Bind to column/row resize events (if available)
+            sheet.bind("<ButtonRelease-1>", lambda e: self.after(100, lambda: self.on_potential_resize(section_name, e)))
+            
+        except Exception as e:
+            print(f"DEBUG: Could not bind resize events: {e}")
+
+    def on_potential_resize(self, section_name, event):
+        """Handle potential column/row resize operations"""
+        # Check if the user may have resized columns or rows
+        # This is called after mouse release, so we check if dimensions changed
+        try:
+            if section_name in self.current_sheets:
+                sheet = self.current_sheets[section_name]
+                # Get current data and recalculate
+                current_data = sheet.get_sheet_data()
+                if current_data:
+                    new_width, new_height = self.calculate_sheet_dimensions_from_sheet(sheet, current_data)
+                    current_width = sheet.winfo_width()
+                    current_height = sheet.winfo_height()
+                    
+                    # Only resize if dimensions changed significantly (more than 10 pixels)
+                    if abs(new_width - current_width) > 10 or abs(new_height - current_height) > 10:
+                        sheet.config(width=new_width, height=new_height)
+                        print(f"DEBUG: Adjusted {section_name} after potential resize: {new_width}x{new_height}")
+        except Exception as e:
+            print(f"DEBUG: Error in potential resize handler: {e}")
+
+    def on_sheet_modified(self, section_name):
+        """Handle sheet modification events"""
+        # Delay resize slightly to allow the modification to complete
+        self.after(50, lambda: self.resize_sheet_to_content(section_name))
+
+    def refine_sheet_dimensions(self, section_name):
+        """Refine sheet dimensions after initial creation using actual measurements"""
+        if section_name in self.current_sheets:
+            sheet = self.current_sheets[section_name]
+            
+            # Auto-size columns and rows to fit content first
+            try:
+                sheet.set_all_cell_sizes_to_text()
+                print(f"DEBUG: Auto-sized cells to text for {section_name}")
+            except Exception as e:
+                print(f"DEBUG: Could not auto-size cells during refinement: {e}")
+            
+            current_data = sheet.get_sheet_data()
+            # Use the more accurate calculation method
+            new_width, new_height = self.calculate_sheet_dimensions_from_sheet(sheet, current_data)
+            sheet.config(width=new_width, height=new_height)
+            print(f"DEBUG: Refined {section_name} dimensions to {new_width}x{new_height}")
 
     # Event handlers
     def on_tree_select(self, event):
@@ -454,6 +788,9 @@ class View(tk.Tk):
             self.load_test_data_sections(data)
         elif content_type == "no_report":
             self.show_no_report_message()
+        
+        # Bind mouse wheel events to all new child widgets
+        self.center_scrollable.bind_mousewheel_to_children(self.center_scrollable.scrollable_frame)
 
     def show_no_report_message(self):
         """Show message when no report is loaded"""
@@ -501,8 +838,33 @@ class View(tk.Tk):
 
     def load_test_data_sections(self, data):
         """Load test data sections"""
-        # Implementation for test data display
-        pass
+        if not data:
+            # Show message when no data files found
+            message_label = tk.Label(
+                self.center_scrollable.scrollable_frame,
+                text="No data files found for this test",
+                font=("Arial", 14),
+                fg="gray"
+            )
+            message_label.pack(pady=50)
+            return
+        
+        # Load each table file as a separate section
+        for section_name, section_data in data.items():
+            # Create a readable title from filename
+            title = section_name.replace('_', ' ').title()
+            subtitle = f"Data from {section_name}.csv"
+            
+            # Create sheet section
+            sheet = self.create_sheet_section(
+                self.center_scrollable.scrollable_frame,
+                title,
+                subtitle,
+                section_data,
+                section_name
+            )
+            
+            self.current_sheets[section_name] = sheet
 
     def load_equipment_list(self, equipment_data):
         """Load equipment checkboxes"""

@@ -1,0 +1,17 @@
+[
+  [
+    "file_name",
+    "title",
+    "caption"
+  ],
+  [
+    "table1.csv",
+    "Measurement Data",
+    "Primary measurement results"
+  ],
+  [
+    "table2.csv",
+    "Test Conditions",
+    "Test setup and conditions"
+  ]
+]

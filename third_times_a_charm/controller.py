@@ -266,33 +266,44 @@ class Controller:
         except Exception as e:
             self.view.show_message("Error", f"Failed to open report: {str(e)}", "error")
 
-    def save_current(self):
+    def save_current(self, show_message=True):
         """Save current data"""
         if not self.model or not self.model.report_path:
-            self.view.show_message("Warning", "No report loaded", "warning")
+            if show_message:
+                self.view.show_message("Warning", "No report loaded", "warning")
             return
         
         try:
             # Save all current sheet data
             for section_name in self.view.current_sheets:
                 sheet_data = self.view.get_sheet_data(section_name)
-                self.model.save_cover_page_section(section_name, sheet_data)
+                
+                # Save based on current selection type
+                if self.current_selection_type == 'test' and isinstance(self.current_selection, tuple):
+                    # Save test data
+                    category, test_name = self.current_selection
+                    self.model.save_test_data(category, test_name, section_name, sheet_data)
+                else:
+                    # Save cover page data
+                    self.model.save_cover_page_section(section_name, sheet_data)
                 
                 # If equipment_used section was saved, refresh the equipment list
                 if section_name == 'equipment_used':
                     self.load_equipment_for_current_test()
             
-            self.view.show_message("Success", "Data saved successfully!")
+            if show_message:
+                self.view.show_message("Success", "Data saved successfully!")
             
         except Exception as e:
-            self.view.show_message("Error", f"Failed to save: {str(e)}", "error")
+            if show_message:
+                self.view.show_message("Error", f"Failed to save: {str(e)}", "error")
 
     # Tree operations
     def on_tree_selection(self, item):
         """Handle tree item selection"""
-        # Save current data before switching
+        # Save current data before switching (no message)
         if self.current_selection:
-            self.save_current()
+            self.save_current(show_message=False)
         
         # Get item information
         item_text = self.view.tree.item(item, 'text')
@@ -356,10 +367,13 @@ class Controller:
         if not self.model or not self.model.report_path:
             return
         
-        # Load test data (implementation depends on test data structure)
-        test_path = os.path.join(self.model.tests_path, category, test_name)
+        # Get test data from model
+        test_data = self.model.get_test_data(category, test_name)
         
-        # For now, just load equipment
+        # Load test data into center view
+        self.view.load_center_content('test_data', test_data)
+        
+        # Load equipment list
         self.load_equipment_for_current_test()
 
     def load_equipment_for_current_test(self):
@@ -461,9 +475,9 @@ class Controller:
         self.view.show_message("Info", "Delete functionality would be implemented here")
 
     def add_section(self):
-        """Add a new section to current test"""
-        # Implementation for adding new data sections
-        self.view.show_message("Info", "Add section functionality would be implemented here")
+        """Add a new table to current test"""
+        # Implementation for adding new table sections
+        self.view.show_message("Info", "Add table functionality would be implemented here")
 
     # Equipment management
     def on_equipment_toggle(self, equipment_id, is_selected):
@@ -554,15 +568,34 @@ class Controller:
         # Create default CSV files
         csv_path = os.path.join(test_path, 'csv')
         
-        # Create data.csv with headers
+        # Create multiple table files (table1.csv, table2.csv)
         import pandas as pd
-        default_data = pd.DataFrame({
+        
+        # Create table1.csv with measurement data headers
+        table1 = pd.DataFrame({
             'Parameter': [''],
             'Value': [''],
             'Unit': [''],
             'Notes': ['']
         })
-        default_data.to_csv(os.path.join(csv_path, 'data.csv'), index=False)
+        table1.to_csv(os.path.join(csv_path, 'table1.csv'), index=False)
+        
+        # Create table2.csv with test conditions headers
+        table2 = pd.DataFrame({
+            'Condition': [''],
+            'Setting': [''],
+            'Actual': [''],
+            'Tolerance': ['']
+        })
+        table2.to_csv(os.path.join(csv_path, 'table2.csv'), index=False)
+        
+        # Create tables.csv with table metadata
+        tables_metadata = pd.DataFrame({
+            'file_name': ['table1.csv', 'table2.csv'],
+            'title': ['Measurement Data', 'Test Conditions'],
+            'caption': ['Primary measurement results', 'Test setup and conditions']
+        })
+        tables_metadata.to_csv(os.path.join(csv_path, 'tables.csv'), index=False)
         
         # Note: equipment_used is managed centrally through cover_page/equipment_used.json
         # No need to create individual equipment_used.csv files for each test

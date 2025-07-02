@@ -85,8 +85,9 @@
 # ├── input/                    # Category (e.g. input, output, safety, etc.)
 # │   ├── input_current/        # Individual test
 # │   │   ├── csv/
-# │   │   │   ├── data1.csv             # data table #1 for the test
-# │   │   │   ├── data2.csv             # data table #2 for the test
+# │   │   │   ├── table1.csv             # data table #1 for the test
+# │   │   │   ├── table2.csv             # data table #2 for the test
+# │   │   │   ├── tables.csv             # csv file holding all the information about the tables: columns will be file_name, title, caption
 # │   │   │   └── equipment_used.csv   # Equipment used in the test
 # │   │   ├── images/
 # │   │   │   ├── *.png, *.jpg         # Test images
@@ -253,3 +254,105 @@ class Model:
     def send_report(self):
         """Send or distribute the generated report"""
         pass
+
+    def get_test_data(self, category: str, test_name: str):
+        """Get all data files for a specific test"""
+        import os
+        import pandas as pd
+        
+        test_data = {}
+        test_path = os.path.join(self.tests_path, category, test_name, 'csv')
+        
+        if not os.path.exists(test_path):
+            return test_data
+        
+        # Find all table files (table1.csv, table2.csv, etc.)
+        for file_name in os.listdir(test_path):
+            if file_name.startswith('table') and file_name.endswith('.csv'):
+                file_path = os.path.join(test_path, file_name)
+                try:
+                    # Read CSV and convert to tksheet format (list of lists)
+                    df = pd.read_csv(file_path)
+                    # Convert to list of lists with headers
+                    data_list = [df.columns.tolist()] + df.values.tolist()
+                    # Use filename without extension as section name
+                    section_name = file_name.replace('.csv', '')
+                    test_data[section_name] = data_list
+                except Exception as e:
+                    print(f"Error reading {file_path}: {e}")
+                    continue
+        
+        return test_data
+    
+    def save_test_data(self, category: str, test_name: str, section_name: str, tksheet_data: list):
+        """Save test data to CSV file"""
+        import os
+        import pandas as pd
+        
+        test_path = os.path.join(self.tests_path, category, test_name, 'csv')
+        os.makedirs(test_path, exist_ok=True)
+        
+        file_path = os.path.join(test_path, f"{section_name}.csv")
+        
+        if not tksheet_data or len(tksheet_data) < 2:
+            # Create empty file with just headers
+            pd.DataFrame().to_csv(file_path, index=False)
+            return
+        
+        try:
+            # Convert tksheet data to DataFrame
+            headers = tksheet_data[0]
+            rows = tksheet_data[1:]
+            df = pd.DataFrame(rows, columns=headers)
+            df.to_csv(file_path, index=False)
+        except Exception as e:
+            print(f"Error saving {file_path}: {e}")
+    
+    def get_table_metadata(self, category: str, test_name: str):
+        """Get table metadata from tables.csv"""
+        import os
+        import pandas as pd
+        
+        tables_file = os.path.join(self.tests_path, category, test_name, 'csv', 'tables.csv')
+        
+        if not os.path.exists(tables_file):
+            return {}
+        
+        try:
+            df = pd.read_csv(tables_file)
+            # Convert to dict for easy lookup
+            metadata = {}
+            for _, row in df.iterrows():
+                filename = row['file_name']
+                metadata[filename] = {
+                    'title': row.get('title', ''),
+                    'caption': row.get('caption', '')
+                }
+            return metadata
+        except Exception as e:
+            print(f"Error reading tables metadata: {e}")
+            return {}
+    
+    def save_table_metadata(self, category: str, test_name: str, metadata: dict):
+        """Save table metadata to tables.csv"""
+        import os
+        import pandas as pd
+        
+        tables_file = os.path.join(self.tests_path, category, test_name, 'csv', 'tables.csv')
+        
+        # Convert metadata dict to DataFrame
+        rows = []
+        for filename, info in metadata.items():
+            rows.append({
+                'file_name': filename,
+                'title': info.get('title', ''),
+                'caption': info.get('caption', '')
+            })
+        
+        df = pd.DataFrame(rows)
+        
+        try:
+            os.makedirs(os.path.dirname(tables_file), exist_ok=True)
+            df.to_csv(tables_file, index=False)
+        except Exception as e:
+            print(f"Error saving tables metadata: {e}")
