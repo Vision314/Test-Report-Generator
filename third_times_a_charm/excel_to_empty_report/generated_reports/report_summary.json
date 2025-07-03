@@ -1,0 +1,28 @@
+{
+  "report_metadata": {
+    "total_tests": 2,
+    "categories": [
+      "Input"
+    ],
+    "generation_timestamp": "2025-07-03T14:53:19.893659"
+  },
+  "cover_page_fields": [
+    "Field",
+    "Specification Name",
+    "Input Voltages",
+    "Output Current"
+  ],
+  "test_summary": {
+    "Input": {
+      "test_count": 2,
+      "test_items": [
+        "Input Current",
+        "No Load Input Power"
+      ],
+      "table_types": [
+        "multi_parameter_array",
+        "multi_parameter_array"
+      ]
+    }
+  }
+}

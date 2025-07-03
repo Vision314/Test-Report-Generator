@@ -1,0 +1,43 @@
+{
+  "test_info": {
+    "category": "Input",
+    "test_item": "No Load Input Power",
+    "table_type": "multi_parameter_array"
+  },
+  "parameters": {
+    "Parameter": "V_in",
+    "Parameter #1": "I_out"
+  },
+  "arrays": {
+    "Parameter": "{V_in_P_nl}",
+    "Parameter #1": "{I_out_P_nl}"
+  },
+  "results": {
+    "result_1": {
+      "name": "P_in",
+      "unit": "mW"
+    }
+  },
+  "calc_results": {},
+  "row_calcs": {},
+  "limits": {
+    "limit_1": "max"
+  },
+  "template_structure": {
+    "columns": [
+      "Test Condition",
+      "V_in",
+      "I_out",
+      "P_in",
+      "Unit (mW)",
+      "Limit",
+      "Pass/Fail"
+    ],
+    "rows": [
+      {
+        "test_condition": "Test Case 1",
+        "pass_fail": "Pass/Fail"
+      }
+    ]
+  }
+}
