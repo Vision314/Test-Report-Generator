@@ -138,15 +138,23 @@
 # │   model, controller: MVC component references                            │
 # │   report_path, current_test, current_section: Application state          │
 # │   tree: File manager tree widget                                         │
-# │   center_scrollable: Scrollable frame for center content                 │
+# │   center_scrollable: Scrollable frame for form editor content           │
 # │   current_sheets: Dict of active tksheet widgets                         │
 # │   equipment_frame: Frame containing equipment checkboxes                 │
 # │   equipment_vars: Dict of equipment checkbox variables                   │
+# │   notebook: Notebook widget for Form Editor and CSV Editor tabs         │
+# │   form_editor_frame: Frame for Form Editor tab                           │
+# │   csv_editor_frame: Frame for CSV Editor tab                             │
+# │   latex_viewer: Text widget for LaTeX content display                    │
 # │                                                                          │
 # │ GUI LAYOUT:                                                              │
-# │   ├── File Manager (Left)   │ Center Editor (Top Right)     │            │
-# │   │  - Tree view            │  - Scrollable tksheets        │            │
-# │   │  - Add/Delete buttons   │  - Section titles/subtitles   │            │
+# │   ├── File Manager (Left)   │ Tabbed Editor (Top Right)     │            │
+# │   │  - Tree view            │  ├─ Form Editor Tab           │            │
+# │   │  - Add/Delete buttons   │  │  - Scrollable tksheets     │            │
+# │   │                         │  └─ CSV Editor Tab            │            │
+# │   │                         │ LaTeX Viewer (Far Right)      │            │
+# │   │                         │  - LaTeX content display      │            │
+# │   │                         │  - Refresh button             │            │
 # │   │                         ├────────────────────────────────│           │
 # │   │                         │ Equipment Manager (Bottom)    │            │
 # │   │                         │  - Scrollable checkboxes      │            │
@@ -241,6 +249,12 @@ class View(tk.Tk):
         self.equipment_frame = None
         self.equipment_vars = {}  # Checkbox variables for equipment
         
+        # New components for tabbed editor and LaTeX viewer
+        self.notebook = None  # For Form Editor and CSV Editor tabs
+        self.form_editor_frame = None
+        self.csv_editor_frame = None
+        self.latex_viewer = None
+        
         self.create_menu()
         self.create_panes()
 
@@ -284,7 +298,7 @@ class View(tk.Tk):
         right_pane = tk.PanedWindow(main_pane, orient=tk.VERTICAL)
         main_pane.add(right_pane)
         
-        # Center Pane: Scrollable sheets editor
+        # Center Pane: Horizontal split [Tabbed Editor] | [LaTeX Viewer]
         self.create_center_editor_pane(right_pane)
         
         # Bottom Pane: Equipment manager
@@ -310,21 +324,84 @@ class View(tk.Tk):
         parent.add(file_frame)
 
     def create_center_editor_pane(self, parent):
-        """Create the center scrollable editor pane"""
-        center_frame = ttk.Frame(parent)
+        """Create the center editor pane with horizontal split: [Tabbed Editor] | [LaTeX Viewer]"""
+        # Create horizontal split for tabbed editor and LaTeX viewer
+        center_pane = tk.PanedWindow(parent, orient=tk.HORIZONTAL)
         
-        # Toolbar
-        toolbar = ttk.Frame(center_frame)
-        ttk.Label(toolbar, text="Test Data Editor", font=("Arial", 10, "bold")).pack(side=tk.LEFT, padx=5)
-        ttk.Button(toolbar, text="Save", command=self.save_current).pack(side=tk.RIGHT, padx=2)
-        ttk.Button(toolbar, text="Add Table", command=self.add_section).pack(side=tk.RIGHT, padx=2)
-        toolbar.pack(fill=tk.X, pady=(0, 5))
+        # Left side: Tabbed editor (Form Editor and CSV Editor)
+        self.create_tabbed_editor_pane(center_pane)
         
-        # Scrollable frame for multiple sheets
-        self.center_scrollable = ScrollableFrame(center_frame)
+        # Right side: LaTeX viewer
+        self.create_latex_viewer_pane(center_pane)
+        
+        parent.add(center_pane, stretch="always")
+
+    def create_tabbed_editor_pane(self, parent):
+        """Create the left tabbed editor pane with Form Editor and CSV Editor tabs"""
+        tabbed_frame = ttk.Frame(parent)
+        
+        # Create notebook for tabs
+        self.notebook = ttk.Notebook(tabbed_frame)
+        
+        # Form Editor tab
+        self.form_editor_frame = ttk.Frame(self.notebook)
+        self.notebook.add(self.form_editor_frame, text="Form Editor")
+        
+        # Add placeholder content for Form Editor
+        form_label = ttk.Label(self.form_editor_frame, text="Form Editor - Coming Soon", 
+                             font=("Arial", 12), foreground="gray")
+        form_label.pack(expand=True)
+        
+        # CSV Editor tab
+        self.csv_editor_frame = ttk.Frame(self.notebook)
+        self.notebook.add(self.csv_editor_frame, text="CSV Editor")
+        
+        # Add toolbar for CSV Editor
+        csv_toolbar = ttk.Frame(self.csv_editor_frame)
+        ttk.Label(csv_toolbar, text="CSV Editor", font=("Arial", 10, "bold")).pack(side=tk.LEFT, padx=5)
+        ttk.Button(csv_toolbar, text="Save", command=self.save_current).pack(side=tk.RIGHT, padx=2)
+        ttk.Button(csv_toolbar, text="Add Table", command=self.add_section).pack(side=tk.RIGHT, padx=2)
+        csv_toolbar.pack(fill=tk.X, pady=(0, 5))
+        
+        # Add scrollable frame for CSV editor content (tables)
+        self.center_scrollable = ScrollableFrame(self.csv_editor_frame)
         self.center_scrollable.pack(fill=tk.BOTH, expand=True)
         
-        parent.add(center_frame, stretch="always")
+        self.notebook.pack(fill=tk.BOTH, expand=True)
+        parent.add(tabbed_frame)
+
+    def create_latex_viewer_pane(self, parent):
+        """Create the right LaTeX viewer pane"""
+        latex_frame = ttk.Frame(parent)
+        
+        # Toolbar
+        toolbar = ttk.Frame(latex_frame)
+        ttk.Label(toolbar, text="LaTeX Viewer", font=("Arial", 10, "bold")).pack(side=tk.LEFT, padx=5)
+        ttk.Button(toolbar, text="Refresh", command=self.refresh_latex, width=8).pack(side=tk.RIGHT, padx=2)
+        toolbar.pack(fill=tk.X, pady=(0, 5))
+        
+        # LaTeX content area (using Text widget for now)
+        latex_scroll_frame = ttk.Frame(latex_frame)
+        latex_scrollbar = ttk.Scrollbar(latex_scroll_frame)
+        
+        self.latex_viewer = tk.Text(latex_scroll_frame, 
+                                   wrap=tk.WORD, 
+                                   yscrollcommand=latex_scrollbar.set,
+                                   font=("Courier", 10),
+                                   bg="white",
+                                   fg="black")
+        
+        latex_scrollbar.config(command=self.latex_viewer.yview)
+        latex_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.latex_viewer.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        
+        latex_scroll_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Add placeholder content
+        self.latex_viewer.insert(tk.END, "LaTeX content will appear here...")
+        self.latex_viewer.config(state=tk.DISABLED)  # Make read-only
+        
+        parent.add(latex_frame)
 
     def create_equipment_manager_pane(self, parent):
         """Create the bottom equipment manager pane"""
@@ -750,6 +827,41 @@ class View(tk.Tk):
         """Add new equipment"""
         if self.controller:
             self.controller.add_equipment()
+
+    def update_latex_content(self, latex_content):
+        """Update the LaTeX viewer with new content"""
+        if self.latex_viewer:
+            self.latex_viewer.config(state=tk.NORMAL)
+            self.latex_viewer.delete(1.0, tk.END)
+            self.latex_viewer.insert(tk.END, latex_content)
+            self.latex_viewer.config(state=tk.DISABLED)
+
+    def get_current_tab(self):
+        """Get the currently selected tab in the notebook"""
+        if self.notebook:
+            current_tab = self.notebook.select()
+            tab_text = self.notebook.tab(current_tab, "text")
+            return tab_text
+        return None
+
+    def switch_to_tab(self, tab_name):
+        """Switch to a specific tab by name"""
+        if self.notebook:
+            for i in range(self.notebook.index("end")):
+                if self.notebook.tab(i, "text") == tab_name:
+                    self.notebook.select(i)
+                    break
+
+    def refresh_latex(self):
+        """Refresh LaTeX viewer content"""
+        if self.controller:
+            self.controller.refresh_latex()
+        else:
+            # Demo content for when no controller is set
+            self.latex_viewer.config(state=tk.NORMAL)
+            self.latex_viewer.delete(1.0, tk.END)
+            self.latex_viewer.insert(tk.END, "LaTeX content refreshed...\n\n% Sample LaTeX table\n\\begin{table}[htbp]\n\\centering\n\\caption{Sample Test Results}\n\\begin{tabular}{|l|c|r|}\n\\hline\nParameter & Value & Unit \\\\\n\\hline\nVoltage & 12.0 & V \\\\\nCurrent & 2.5 & A \\\\\nPower & 30.0 & W \\\\\n\\hline\n\\end{tabular}\n\\end{table}")
+            self.latex_viewer.config(state=tk.DISABLED)
 
     # Public interface methods for controller
     def set_controller(self, controller):

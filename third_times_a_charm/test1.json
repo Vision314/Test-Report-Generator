@@ -1,0 +1,40 @@
+{
+  "basic_info": {
+    "category": "",
+    "test_name": "",
+    "description": ""
+  },
+  "row_conditions": {
+    "names": "",
+    "units": "",
+    "values": ""
+  },
+  "column_conditions": {
+    "names": "",
+    "units": "",
+    "values": ""
+  },
+  "table_conditions": {
+    "names": "",
+    "units": "",
+    "values": ""
+  },
+  "results": {
+    "names": "",
+    "units": ""
+  },
+  "specifications": {
+    "names": "",
+    "units": "",
+    "values": "",
+    "connection": "",  
+    "type": ""
+  },
+  "calculations": {
+    "names": "",
+    "units": "",
+    "connection": "",
+    "equation": ""
+  }
+}
+
