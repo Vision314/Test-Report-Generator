@@ -5,19 +5,19 @@
     "description": ""
   },
   "row_conditions": {
-    "names": "Input Voltage",
-    "units": "V",
-    "values": "99, 277"
+    "names": "Input Voltage, other",
+    "units": "V, O",
+    "values": "[99, 277], [other, values, blah]"
   },
   "column_conditions": {
-    "names": "",
-    "units": "",
-    "values": ""
+    "names": "Freq, Temp",
+    "units": "Hz, C",
+    "values": "[10, 60, 90], [40, 150]"
   },
   "table_conditions": {
-    "names": "",
+    "names": "GND Condition",
     "units": "",
-    "values": ""
+    "values": "F1, F2, F3"
   },
   "results": {
     "names": "Input Current",
