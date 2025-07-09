@@ -161,8 +161,10 @@ class Tables:
         if self.column_conditions['values']:
             for condition_values in self.column_conditions['values']:
                 total_cols += len(condition_values)
-        
-        # NOTE: Results are now rows, not columns, so not counted here
+        else:
+            # No column conditions: results need their own columns
+            if self.results['names']:
+                total_cols += len(self.results['names'])
         
         # Specification columns
         if self.specifications['names']:
@@ -289,20 +291,20 @@ class Tables:
         # Start column index after row condition columns
         start_col = 2 if self.row_conditions['names'] else 0
         
-        # Create one row for each result
-        results_rows = []
-        for i, (name, unit) in enumerate(zip(self.results['names'], self.results['units'])):
-            # Format the result name with units
-            if unit:
-                result_name = f"{name} ({unit})"
-            else:
-                result_name = name
-            
-            # Create row filled with "--" initially
-            result_row = ['--'] * total_columns
-            
-            # Fill column condition areas with the result name
-            if self.column_conditions['values']:
+        if self.column_conditions['values']:
+            # With column conditions: create one row for each result
+            results_rows = []
+            for i, (name, unit) in enumerate(zip(self.results['names'], self.results['units'])):
+                # Format the result name with units
+                if unit:
+                    result_name = f"{name} ({unit})"
+                else:
+                    result_name = name
+                
+                # Create row filled with "--" initially
+                result_row = ['--'] * total_columns
+                
+                # Fill column condition areas with the result name
                 current_col = start_col
                 for condition_values in self.column_conditions['values']:
                     # Fill all columns for this condition group with the result name
@@ -310,14 +312,27 @@ class Tables:
                         if current_col < total_columns:
                             result_row[current_col] = result_name
                             current_col += 1
-            else:
-                # No column conditions - fill remaining columns with result name
-                for col in range(start_col, total_columns):
-                    result_row[col] = result_name
+                
+                results_rows.append(result_row)
             
-            results_rows.append(result_row)
-        
-        return results_rows
+            return results_rows
+        else:
+            # No column conditions: create header row with result names as columns
+            result_header = ['--'] * total_columns
+            
+            # Fill remaining columns with result names
+            current_col = start_col
+            for i, (name, unit) in enumerate(zip(self.results['names'], self.results['units'])):
+                if current_col < total_columns:
+                    # Format the result name with units
+                    if unit:
+                        result_name = f"{name} ({unit})"
+                    else:
+                        result_name = name
+                    result_header[current_col] = result_name
+                    current_col += 1
+            
+            return [result_header]
     
     def _get_table_condition_values(self, indices):
         """Get the specific table condition values for given indices"""
@@ -339,22 +354,11 @@ class Tables:
         # Build the complete table data including header rows
         all_rows = []
         
-        # === HEADER ROWS ===
-        # Row 1: Main title (always present)
-        title = self._generate_title(table_condition_values)
-        title_row = [title] * total_columns
-        all_rows.append(title_row)
-        
-        # Row 2: Table conditions (only if table conditions exist)
-        if table_condition_values and any(table_condition_values):
-            condition_str = self._format_table_conditions(table_condition_values)
-            condition_row = [condition_str] * total_columns
-            all_rows.append(condition_row)
-        
         # === COLUMN CONDITION HEADER ROWS ===
-        # Add column condition headers (always 2 rows: names and values)
-        column_condition_data = self._build_column_condition_data(total_columns)
-        all_rows.extend(column_condition_data)
+        # Add column condition headers only if column conditions exist
+        if self.column_conditions['names']:
+            column_condition_data = self._build_column_condition_data(total_columns)
+            all_rows.extend(column_condition_data)
         
         # === RESULTS ROWS ===
         # Add results rows (if results exist)
@@ -375,6 +379,7 @@ class Tables:
                 all_rows.append(placeholder_row)
         
         # Create DataFrame with all rows (headers + data) - no row labels/index
+        # Don't specify columns to avoid any header issues
         df = pd.DataFrame(all_rows)
         
         # Add metadata to DataFrame

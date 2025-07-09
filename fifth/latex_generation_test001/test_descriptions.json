@@ -5,30 +5,30 @@
     "description": ""
   },
   "row_conditions": {
-    "names": "Input Voltage, other",
-    "units": "V, O",
-    "values": "[99, 277], [other, values, blah]"
+    "names": "Input Voltage",
+    "units": "V",
+    "values": "99, 277"
   },
   "column_conditions": {
-    "names": "Freq, Temp",
-    "units": "Hz, C",
-    "values": "[10, 60, 90], [40, 150]"
+    "names": "Frequency, Load",
+    "units": "MHz, W",
+    "values": "[1, 10, 20, 40, 50], [0, 25, 50, 75, 100]"
   },
   "table_conditions": {
-    "names": "GND Condition",
-    "units": "",
-    "values": "F1, F2, F3"
+    "names": "Grounding Config, Temp",
+    "units": ", C",
+    "values": "[F1, F2, F3, F4, F5], [40, 150]"
   },
   "results": {
-    "names": "Input Current",
-    "units": "A",
+    "names": "",
+    "units": "",
     "values": ""
   },
   "specifications": {
-    "names": "Input Current",
-    "units": "A",
-    "values": "2.3, 0.9",
-    "connection": "Whole Table",
+    "names": "",
+    "units": "",
+    "values": "",
+    "connection": "",
     "type": ""
   },
   "calculations": {
