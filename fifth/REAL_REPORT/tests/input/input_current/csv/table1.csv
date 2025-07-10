@@ -1,4 +1,6 @@
---,--,Frequency (MHz),Frequency (MHz),Frequency (MHz),Frequency (MHz),Frequency (MHz),Load (W),Load (W),Load (W),Load (W),Load (W)
---,--,1,10,20,40,50,0,25,50,75,100
-Input Voltage (V),99,--,--,--,--,--,--,--,--,--,--
-Input Voltage (V),277,--,--,--,--,--,--,--,--,--,--
+--,--,Output Current (A)
+--,--,50
+--,--,Input Current (A)
+Input Voltage (Vac),90,--
+Input Voltage (Vac),120,--
+Input Voltage (Vac),240,--

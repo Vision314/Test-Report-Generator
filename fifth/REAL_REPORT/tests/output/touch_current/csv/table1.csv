@@ -1,0 +1,8 @@
+--,--,Ground Configuration,Ground Configuration
+--,--,F1,F2
+Input Parameters,NC (Normal),--,--
+Input Parameters,NC (Rev),--,--
+Input Parameters,SFC (Normal - Open Neutral),--,--
+Input Parameters,SFC (Rev - Open Neutral),--,--
+Input Parameters,SFC(Normal - Open Earth),--,--
+Input Parameters,SFC(Rev - Open Earth),--,--

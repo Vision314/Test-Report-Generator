@@ -1,0 +1,40 @@
+{
+  "basic_info": {
+    "category": "EMC",
+    "test_name": "Conducted Emissions",
+    "description": ""
+  },
+  "row_conditions": {
+    "names": "Frequency List",
+    "units": "MHz",
+    "values": "1, 10, 50, 100"
+  },
+  "column_conditions": {
+    "names": "",
+    "units": "",
+    "values": ""
+  },
+  "table_conditions": {
+    "names": "Ground Configuration, Input Voltage, Output Current, L/N",
+    "units": ", Vac, A,",
+    "values": "[F1, F2], [120, 240], [50A, 25A], [Line, Neutral]"
+  },
+  "results": {
+    "names": "Average Margin, Quasi-Peak Margin",
+    "units": "dBuV, dBuV",
+    "values": ""
+  },
+  "specifications": {
+    "names": "",
+    "units": "",
+    "values": "",
+    "connection": "",
+    "type": ""
+  },
+  "calculations": {
+    "names": "",
+    "units": "",
+    "connection": "",
+    "equation": ""
+  }
+}
