@@ -1,0 +1,40 @@
+{
+  "basic_info": {
+    "category": "Input",
+    "test_name": "Efficiency",
+    "description": ""
+  },
+  "row_conditions": {
+    "names": "Input Voltage",
+    "units": "Vac",
+    "values": "90, 120, 240"
+  },
+  "column_conditions": {
+    "names": "Load",
+    "units": "A",
+    "values": "50, 37.5, 25, 12.5"
+  },
+  "table_conditions": {
+    "names": "",
+    "units": "",
+    "values": ""
+  },
+  "results": {
+    "names": "Efficiency",
+    "units": "percent",
+    "values": ""
+  },
+  "specifications": {
+    "names": "",
+    "units": "",
+    "values": "",
+    "connection": "",
+    "type": ""
+  },
+  "calculations": {
+    "names": "",
+    "units": "",
+    "connection": "",
+    "equation": ""
+  }
+}

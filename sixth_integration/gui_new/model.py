@@ -84,7 +84,6 @@
 # tests/
 # ├── input/                    # Category (e.g. input, output, safety, etc.)
 # │   ├── input_current/        # Individual test
-# │   │   ├── test_description.json    # contains test description, row conditions, column conditions, table conditions, results, specifications, calculations  
 # │   │   ├── csv/
 # │   │   │   ├── table1.csv             # data table #1 for the test
 # │   │   │   ├── table2.csv             # data table #2 for the test
@@ -115,48 +114,6 @@
 #     ├── main.tex
 #     ├── *.tex, *.sty, *.bib
 #     └── images/, tables/, etc.
-
-# test_description.json
-# {
-#   "basic_info": {
-#     "category": "",
-#     "test_name": "",
-#     "description": ""
-#   },
-#   "row_conditions": {
-#     "names": "",
-#     "units": "",
-#     "values": ""
-#   },
-#   "column_conditions": {
-#     "names": "",
-#     "units": "",
-#     "values": ""
-#   },
-#   "table_conditions": {
-#     "names": "",
-#     "units": "",
-#     "values": ""
-#   },
-#   "results": {
-#     "names": "",
-#     "units": "",
-#     "values": ""
-#   },
-#   "specifications": {
-#     "names": "",
-#     "units": "",
-#     "values": "",
-#     "connection": "",
-#     "type": ""
-#   },
-#   "calculations": {
-#     "names": "",
-#     "units": "",
-#     "connection": "",
-#     "equation": ""
-#   }
-# }
 
 
 import pandas as pd

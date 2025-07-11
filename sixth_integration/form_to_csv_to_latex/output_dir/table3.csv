@@ -1,0 +1,6 @@
+--,--,Output Current (A),Output Current (A),--,Temperature (C),Temperature (C),--
+--,--,50,25,--,40,160,--
+--,--,Input Current (A),Input Current (A),RMS Current (A),Input Current (A),Input Current (A),--
+Input Voltage (Vac),90,--,--,=C4+D4,--,--,--
+Input Voltage (Vac),120,--,--,=C4+D4,--,--,--
+Input Voltage (Vac),240,--,--,=C4+D4,--,--,--

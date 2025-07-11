@@ -1,0 +1,40 @@
+{
+  "basic_info": {
+    "category": "Input",
+    "test_name": "Input Current",
+    "description": ""
+  },
+  "row_conditions": {
+    "names": "Input Voltage",
+    "units": "Vac",
+    "values": "90, 120, 240"
+  },
+  "column_conditions": {
+    "names": "Output Current, Temperature",
+    "units": "A, C",
+    "values": "[50, 25], [40, 160]"
+  },
+  "table_conditions": {
+    "names": "gnd_cnfg",
+    "units": "F",
+    "values": "F1, F2, F3"
+  },
+  "results": {
+    "names": "Input Current",
+    "units": "A",
+    "values": ""
+  },
+  "specifications": {
+    "names": "",
+    "units": "",
+    "values": "",
+    "connection": "",
+    "type": ""
+  },
+  "calculations": {
+    "names": "RMS Current",
+    "units": "A",
+    "connection": "CV->Output Current",
+    "equation": "=C4+D4"
+  }
+}

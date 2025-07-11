@@ -1,0 +1,4 @@
+filename,category_name,test_name,table_conditions
+table1.csv,Input,Input Current,gnd_cnfg (F) = F1
+table2.csv,Input,Input Current,gnd_cnfg (F) = F2
+table3.csv,Input,Input Current,gnd_cnfg (F) = F3
