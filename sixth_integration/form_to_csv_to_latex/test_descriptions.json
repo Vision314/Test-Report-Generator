@@ -15,12 +15,12 @@
     "values": "[50, 25], [40, 160]"
   },
   "table_conditions": {
-    "names": "gnd_cnfg",
-    "units": "F",
-    "values": "F1, F2, F3"
+    "names": "F, F",
+    "units": "F, C",
+    "values": "[F1, F2, F3], [60, 150, 200]"
   },
   "results": {
-    "names": "Input Current",
+    "names": "",
     "units": "A",
     "values": ""
   },
@@ -28,13 +28,13 @@
     "names": "",
     "units": "",
     "values": "",
-    "connection": "",
-    "type": ""
+    "connections": "",
+    "types": ""
   },
   "calculations": {
-    "names": "RMS Current",
-    "units": "A",
-    "connection": "CV->Output Current",
-    "equation": "=C4+D4"
+    "names": "RMS Current, RMS Current",
+    "units": "A, A",
+    "connection": "CN->Output Current, CN->Temperature",
+    "equations": "=C4+D4, =E4+F4"
   }
 }

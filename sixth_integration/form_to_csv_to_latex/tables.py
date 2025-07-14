@@ -14,6 +14,7 @@ class Tables:
         self.results = self._parse_results(table_metadata)
         self.specifications = self._parse_specifications(table_metadata)
         self.calculations = self._parse_calculations(table_metadata)
+        print(self.calculations)
         
         # Determine dimensions and create multi-dimensional array
         self.dimensions = self._calculate_dimensions()
@@ -112,8 +113,8 @@ class Tables:
         c = metadata.get('calculations', {})
         names = self._parse_values(c.get('names', ''))
         units = self._parse_values(c.get('units', ''))
-        connection = c.get('connection', '')
-        equation = c.get('equation', '')
+        connection = self._parse_values(c.get('connection', ''))
+        equation = self._parse_values(c.get('equation', ''))
         return {'names': names, 'units': units, 'connection': connection, 'equation': equation}
 
     def _parse_calculation_connections(self):
@@ -123,9 +124,12 @@ class Tables:
             return connections
         
         # Split multiple connections by comma
-        connection_strings = [c.strip() for c in self.calculations['connection'].split(',')]
+
+        # connection_strings = [c.strip() for c in self.calculations['connection'].split(',')]
+
+        # print(connection_strings)
         
-        for i, conn_str in enumerate(connection_strings):
+        for i, conn_str in enumerate(self.calculations['connection']):
             if '->' in conn_str:
                 source, target = conn_str.split('->', 1)
                 source = source.strip()
@@ -142,9 +146,11 @@ class Tables:
                     'calc_unit': calc_unit,
                     'calc_index': i
                 })
+
+        print(connections)
         
         return connections
-    
+
     def _normalize_column_name(self, col_name):
         """Normalize column name by removing units in parentheses for comparison"""
         if '(' in col_name and ')' in col_name:
@@ -172,7 +178,6 @@ class Tables:
                     rightmost_col = max(rightmost_col, col_idx)
         
         return rightmost_col if rightmost_col >= 0 else None
-    
 
     def _calculate_dimensions(self):
         """Calculate the number of dimensions based on table conditions"""
@@ -285,7 +290,8 @@ class Tables:
         
         # Calculation columns - only count CN connections for now
         if self.calculations['names'] and self.calculations['connection']:
-            connection_type, _ = self._parse_calculation_connections(self.calculations['connection'])
+            # connection_type, _ = self._parse_calculation_connections(self.calculations['connection'])
+            connection_type, _ = self._parse_calculation_connections()
             if connection_type == 'CN':
                 total_cols += len(self.calculations['names'])
         
@@ -554,17 +560,17 @@ class Tables:
                 # Insert a new column and shift everything right
                 row.insert(from_col, '--')
     
-    def _parse_calculation_connections(self, connection_string):
-        """Parse calculation connection string like 'CN->Frequency' into type and target"""
-        if not connection_string:
-            return None, None
+    # def _parse_calculation_connections(self, connection_string):
+    #     """Parse calculation connection string like 'CN->Frequency' into type and target"""
+    #     if not connection_string:
+    #         return None, None
         
-        if '->' in connection_string:
-            connection_type, target = connection_string.split('->', 1)
-            return connection_type.strip(), target.strip()
-        else:
-            # Just connection type without target
-            return connection_string.strip(), None
+    #     if '->' in connection_string:
+    #         connection_type, target = connection_string.split('->', 1)
+    #         return connection_type.strip(), target.strip()
+    #     else:
+    #         # Just connection type without target
+    #         return connection_string.strip(), None
     
     def _insert_calculation_columns(self, table_data, total_columns):
         """Insert calculation columns for CN connections after finding rightmost matches"""
@@ -573,6 +579,9 @@ class Tables:
         
         # Parse the connection string to get type and target
         connection_type, target_name = self._parse_calculation_connections(self.calculations['connection'])
+        print(connection_type)
+        print(target_name)
+
         
         if connection_type == 'CN':
         
@@ -632,7 +641,23 @@ class Tables:
         
 
         elif connection_type == 'CV':
+            # Determine header structure
+            has_column_conditions = bool(self.column_conditions['names'])
+            has_results = bool(self.results['names'])
+            start_col = 2 if self.row_conditions['names'] else 0
+
+            # Track inserted calculation columns for later name placement
+            self._calculation_columns = {}  # Maps calc_name to column index
             
+            # For each calculation, find where to insert it
+            columns_inserted = 0
+
+
+            for calc_name in self.calculations['names']:
+                target_col = None
+
+
+
 
             return table_data
 
