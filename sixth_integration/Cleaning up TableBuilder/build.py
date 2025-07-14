@@ -27,10 +27,40 @@ class Blocks:
 
     def BuildRCBlock(self):
         # make a df that just holds the data for the row conditions
-        df = pd.DataFrame(index=range(len(self.RC.values)), columns=range(2))
+        if not self.row_conditions['names']:
+            return []
 
-        for value in self.RC.values:
+        row_data = []
+
+        for i, (name, unit) in enumerate(zip(self.row_conditions['names'], self.row_conditions['units'])):
+            # Format the row condition name with units
+            if unit:
+                row_name = f"{name} ({unit})"
+            else:
+                row_name = name
             
+            # Get values for this specific row condition
+            if i < len(self.row_conditions['values']):
+                condition_values = self.row_conditions['values'][i]
+            else:
+                condition_values = ['']  # Default if no values
+            
+            # Create rows for each value
+            for j, value in enumerate(condition_values):
+                row = [''] * total_columns
+                
+                # All rows get the same name (simulating merged cells by repetition)
+                row[0] = row_name
+                
+                # Second column gets the value
+                row[1] = value
+                
+                # Fill remaining columns with placeholders
+                for col in range(2, total_columns):
+                    row[col] = '--'
+                
+                row_data.append(row)
+
         
 
     def BuildHeaderBlock(self):

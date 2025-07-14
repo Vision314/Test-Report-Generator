@@ -87,6 +87,8 @@ class RowConditions:
         self.units = parse_values(self.metadata_RC.get('units'))
         self.values = parse_values(self.metadata_RC.get('values'))
 
+        self.are_multiple_names = True if len(self.names) > 1 else False
+
 class ColumnConditions:
     def __init__(self, metadata: dict = {}):
         self.metadata_whole = metadata
@@ -137,4 +139,3 @@ class Calculations:
 
         self.connection_to, self.connection_type = split_connection_str(self.connections)
 
-        
