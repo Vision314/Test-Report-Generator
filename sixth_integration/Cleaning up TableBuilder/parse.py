@@ -1,5 +1,15 @@
 import numpy as np
 
+def fix_unit_list(units, names):
+
+    if len(units) == len(names):
+        return units
+    else:
+        for name in range(len(names) - len(units)):
+            units.append('')
+        return units
+
+
 def parse_values(values_str):
         """Parse values that can be multi-dimensional like '[F1, F2], [99, 277]' or simple 'A, B, C'"""
         if not values_str:
@@ -53,6 +63,15 @@ def split_connection_str(connections):
 
             return to_arr, type_arr
 
+class BasicInfo:
+    def __init__(self, metadata: dict = {}):
+        self.metadata_whole = metadata
+        self.metadata_BI = metadata.get('basic_info')
+
+        self.category = self.metadata_BI.get('category')
+        self.test_name = self.metadata_BI.get('test_name')
+        self.description = self.metadata_BI.get('description')
+
 class TableConditions:
     def __init__(self, metadata: dict = {}):
         self.metadata_whole = metadata
@@ -84,10 +103,11 @@ class RowConditions:
         self.metadata_RC = metadata.get('row_conditions')
 
         self.names = parse_values(self.metadata_RC.get('names'))
-        self.units = parse_values(self.metadata_RC.get('units'))
+        self.units = fix_unit_list(parse_values(self.metadata_RC.get('units')), self.names)
         self.values = parse_values(self.metadata_RC.get('values'))
 
         self.are_multiple_names = True if len(self.names) > 1 else False
+
 
 class ColumnConditions:
     def __init__(self, metadata: dict = {}):
@@ -108,6 +128,7 @@ class Results:
         self.values = parse_values(self.metadata_results.get('values'))
 
         self.contains_results = bool(self.metadata_results.get('names', False))
+        self.are_multiple_results = True if len(self.names) > 1 else False
 
 class Specifications:
     def __init__(self, metadata: dict = {}):
@@ -131,10 +152,10 @@ class Calculations:
         self.metadata_whole = metadata
         self.metadata_calculations = metadata.get('specifications')
 
-        self.names = parse_values(self.metadata_specifications.get('names'))
-        self.units = parse_values(self.metadata_specifications.get('units'))
+        self.names = parse_values(self.metadata_calculations.get('names'))
+        self.units = parse_values(self.metadata_calculations.get('units'))
 
-        self.connections = parse_values(self.metadata_specifications.get('connections'))
+        self.connections = parse_values(self.metadata_calculations.get('connections'))
         self.equations = parse_values(self.metadata_calculations.get('equations'))
 
         self.connection_to, self.connection_type = split_connection_str(self.connections)

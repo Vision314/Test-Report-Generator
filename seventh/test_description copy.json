@@ -1,26 +1,33 @@
 {
+  "metadata": {
+    "<C1>": "",
+    "<C2>": "",
+    "<re>": "",
+    "<SP>": "",
+    "<CA>": ""
+  },
   "basic_info": {
     "category": "Input",
     "test_name": "Input Current",
     "description": ""
   },
-  "row_conditions": {
-    "names": "Input Voltage, dooo",
-    "units": "C, A",
-    "values": "[99, 120, 240], [1, 2]"
+  "condition1": {
+    "names": "Input Voltage",
+    "units": "V",
+    "values": "99, 120, 240"
   },
-  "column_conditions": {
-    "names": "Output Current, Temperature",
-    "units": "A, C",
-    "values": "[50, 25], [40, 160]"
+  "condition2": {
+    "names": "",
+    "units": "",
+    "values": ""
   },
   "table_conditions": {
-    "names": "F, F",
-    "units": "F, C",
-    "values": "[F1, F2, F3], [60, 150, 200]"
+    "names": "",
+    "units": "",
+    "values": ""
   },
   "results": {
-    "names": "",
+    "names": "Input Current",
     "units": "A",
     "values": ""
   },
