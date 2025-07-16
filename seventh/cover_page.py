@@ -3,12 +3,7 @@ import pickle
 
 class CoverPage():
     def __init__(self):
-        self.equipment_used = self._init_equipment_used()
-        self.general_specifications = self._init_general_specifications()
-        self.testing_and_review = self._init_testing_and_review()
-
-    def _init_equipment_used(self):
-        return pd.DataFrame(columns=[
+        self.equipment_used = pd.DataFrame(columns=[
                             'Equipment Type', 
                             'Manufacturer',
                             'Model',
@@ -16,18 +11,16 @@ class CoverPage():
                             'S/N',
                             'Last Calibrated',
                             'Calibration Due'])
+        self.general_specifications = {}
+        self.testing_and_review = {'Tested By': '',
+                                   'Reviewed By': '',
+                                   'Reviewed Date': ''}
 
-    def _init_general_specifications(self):
-        pass
 
-    def _init_testing_and_review(self):
-        pass
-
-    def add_equipment(self, eq):
-        new_row = pd.DataFrame([eq])
+    def add_equipment(self, equipment):
+        new_row = pd.DataFrame([equipment])
         self.equipment_used = pd.concat([self.equipment_used, new_row], ignore_index=True)
     
-def pickle_object(obj, filepath):
-    # filepath = 'cover_page.pickle'
-    with open(filepath, 'wb') as file:
-        pickle.dump(obj, file)
+    def add_general_specification(self, name, value):
+        gs = {name: value}
+        self.general_specifications[name] = value
