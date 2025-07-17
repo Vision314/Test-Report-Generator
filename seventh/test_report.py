@@ -1,5 +1,6 @@
 from cover_page import *
-from test_subclass import *
+from test_SIMPLIFIED import *
+import pickle
 
 class TestReport():
     def __init__(self, title=''):
@@ -35,9 +36,21 @@ class TestReport():
 
     # -------- Test Pass through Functions ---------
 
-    def add_TC(self, name: str = '', values=None):
-        self.selected_test.add_TC(name, values)
+    def add_CC(self, name: str = '', values=None):
+        self.selected_test.add_CC(name, values)
 
+    def add_Re(self, name: str = ''):
+        self.selected_test.add_Re(name)
+
+    def add_Ca(self, name: str = '', formula: str = ''):
+        self.selected_test.add_Ca(name, formula)
+
+    def add_Sp(self, name: str = '', specifications=None):
+        self.selected_test.add_Sp(name, specifications)
+
+    def update_from_dataframe(self, new_df: pd.DataFrame):
+        self.selected_test.update_from_dataframe(new_df)
+    
     # ----- Cover Page Getter Functions -----
 
     def get_equipment_used(self):
@@ -49,20 +62,45 @@ class TestReport():
     def get_testing_and_review(self):
         return self.cover_page.testing_and_review
     
+    def build_tables(self):
+        self.selected_test.build_tables()
+
+
     # -------- Test Getter Functions ---------
 
-    def get_table_conditions(self):
-        return self.selected_test.table_conditions
+    def get_metadata(self):
+        return self.selected_test.metadata
 
-    def get_shape_of_table_arr(self):
-        return self.selected_test.shape_of_table_arr
+    def get_CC(self):
+        return self.selected_test.column_conditions
+    
+    def get_Re(self):
+        return self.selected_test.results
+    
+    def get_Ca(self):
+        return self.selected_test.calculations
+    
+    def get_root_table(self):
+        return self.selected_test.root_table
 
-    def get_num_of_tables(self):
-        return self.selected_test.num_of_tables
 
-    def save(self, filepath=None):
+
+
+
+
+
+
+
+
+    def pickle(self, filepath=None):
         if filepath is None:
             filepath = f"{self.title}.pickle"
 
         with open(filepath, 'wb') as file:
             pickle.dump(self, file)
+
+    def save_latex_pdf(self, filepath=None):
+        pass
+
+    def save_csv(self, filepath=None):
+        pass
