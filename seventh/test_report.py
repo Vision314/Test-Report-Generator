@@ -10,6 +10,7 @@ class TestReport():
 
         self.selected_test = None
 
+
     def add_test(self, test_category, test_name):
         new_test = Test(test_category, test_name)
         self.tests.append(new_test)
@@ -37,7 +38,11 @@ class TestReport():
     # -------- Test Pass through Functions ---------
 
     def add_CC(self, name: str = '', values=None):
+        
+        
         self.selected_test.add_CC(name, values)
+
+    
 
     def add_Re(self, name: str = ''):
         self.selected_test.add_Re(name)
@@ -57,7 +62,7 @@ class TestReport():
         return self.cover_page.equipment_used
     
     def get_general_specifications(self):
-        return self.cover_page.general_specifications
+        return self.cover_page.general_specifications        
     
     def get_testing_and_review(self):
         return self.cover_page.testing_and_review
@@ -89,7 +94,8 @@ class TestReport():
 
 
 
-
+    def reference_cp_gen_specs(self):
+        pass
 
 
     def pickle(self, filepath=None):

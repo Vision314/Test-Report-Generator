@@ -17,6 +17,8 @@ class Test():
         self.root_table = pd.DataFrame()
         self.equipment_used = pd.DataFrame(index=self.column_condition_combos)
 
+        cover_page_vars = {}
+
     @property
     def column_condition_combos(self):
         cc_vals = list(self.column_conditions.values())

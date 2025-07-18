@@ -21,24 +21,24 @@
     "units": "",
     "values": ""
   },
-  "table_conditions": {
+  "table_condition": {
     "names": "",
     "units": "",
     "values": ""
   },
-  "results": {
+  "result1": {
     "names": "Input Current",
     "units": "A",
     "values": ""
   },
-  "specifications": {
+  "specification1": {
     "names": "",
     "units": "",
     "values": "",
     "connections": "",
     "types": ""
   },
-  "calculations": {
+  "calculation1": {
     "names": "RMS Current, RMS Current",
     "units": "A, A",
     "connection": "CN->Output Current, CN->Temperature",
