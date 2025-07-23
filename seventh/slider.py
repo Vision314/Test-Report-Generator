@@ -13,6 +13,16 @@ class elder:
         self.myButton = Button(master, text='click me', command=self.clicker)
 
         self.myButton.pack(pady=20)
+
+        options = ['mondya', 'tues', 'wed', 'thur', 'fri']
+
+        clicked = StringVar()
+        clicked.set(options[0])
+
+        drop = OptionMenu(master, clicked, *options)
+        drop.pack(pady=20)
+
+        
     
     def clicker(self):
         print('HIII')
@@ -23,4 +33,6 @@ class elder:
 
 
 e = elder(root)
+
+
 root.mainloop()
