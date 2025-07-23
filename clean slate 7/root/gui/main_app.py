@@ -74,6 +74,7 @@ class MainApp(tk.Tk):
         main_paned.add(self.cover_page_manager, weight=1)
 
 
+
     def refresh_all(self):
         self.tests_manager.refresh_ui()
         self.test_editor.refresh_ui()

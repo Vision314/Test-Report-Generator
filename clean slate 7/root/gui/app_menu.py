@@ -77,3 +77,4 @@ class AppMenu(tk.Menu):
 
         except Exception as e:
             mb.showerror("Error", f"Could not load report: \n{e}")
+            print(e)

@@ -23,7 +23,7 @@ class TestReport():
 
     def select_test(self, test_category, test_name):
         for test in self.tests:
-            if test_category == test.test_category and test_name == test.test_name:
+            if test_category == test.category and test_name == test.name:
                 self.selected_test = test
             
     
@@ -40,11 +40,7 @@ class TestReport():
     # -------- Test Pass through Functions ---------
 
     def add_CC(self, name: str = '', values=None):
-        
-        
         self.selected_test.add_CC(name, values)
-
-    
 
     def add_Re(self, name: str = ''):
         self.selected_test.add_Re(name)

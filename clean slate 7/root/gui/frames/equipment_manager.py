@@ -10,7 +10,6 @@ from model.test_report import TestReport
 class EquipmentManager(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
-
         print("EQUIPMENT MANAGER CONSTRUCTED")
 
         tk.Label(self, text='THIS IS THE EQUIPENT MANAGER!').pack()

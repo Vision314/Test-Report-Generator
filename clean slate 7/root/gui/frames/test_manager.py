@@ -17,12 +17,14 @@ class TestsManager(tk.Frame):
 
         # ttk.Label(self, text="THIS IS THE TEST MANAGER!").pack()
         
+        toolbar = ttk.Frame(self, relief=tk.RAISED, borderwidth=1)
+        toolbar.pack(side=tk.TOP, fill=tk.X)
 
-        self.add_test_button = ttk.Button(self, text='ADD TEST', command=self.add_test)
-        self.add_test_button.grid(row=0, column=0)
+        self.add_test_button = ttk.Button(toolbar, text='ADD TEST', command=self.add_test)
+        self.add_test_button.pack(side=tk.LEFT)
 
-        self.remove_test_button = ttk.Button(self, text='REMOVE TEST', command=self.remove_test)
-        self.remove_test_button.grid(row=0, column=1)
+        self.remove_test_button = ttk.Button(toolbar, text='REMOVE TEST', command=self.remove_test)
+        self.remove_test_button.pack(side=tk.LEFT)
 
 
 
@@ -33,7 +35,8 @@ class TestsManager(tk.Frame):
         self.test_tree.column('#0', width=50, stretch=True)
         self.test_tree.column('Test Name', width=50, stretch=True)
 
-        self.test_tree.grid(row=1, column=0, columnspan=2, sticky='nsew')
+        # self.test_tree.grid(row=1, column=0, columnspan=2, sticky='nsew')
+        self.test_tree.pack(fill=tk.BOTH, expand=True)
 
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(1, weight=1)
@@ -83,6 +86,12 @@ class TestsManager(tk.Frame):
 
             print(F"Selected Test: {test_name} | Category: {category}")
 
+            self.report.select_test(category, test_name)
+            # print(self.report.get_root_table().head(5))
+
+        self.master.test_editor.refresh_ui()
+        self.master.equipment_manager.refresh_ui()
+
 
 
 
@@ -118,3 +127,8 @@ class TestsManager(tk.Frame):
             # add test as child under that category
             # self.test_tree.insert(category_map[category], 'end', text='', values=(name,))
             self.test_tree.insert(category_map[category], 'end', text=name)
+
+        # self.report.select_test(category, name)
+        # print(self.report.selected_test.head(5))
+
+            
