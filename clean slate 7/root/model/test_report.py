@@ -21,6 +21,14 @@ class TestReport():
         if not self.selected_test:
             self.selected_test = new_test
 
+    def remove_test(self, cat_del, name_del):
+        for test in self.tests:
+            if test.category == cat_del and test.name == name_del:
+                self.tests.remove(test)
+                return
+        
+        # self.tests.pop()
+
     def select_test(self, test_category, test_name):
         for test in self.tests:
             if test_category == test.category and test_name == test.name:

@@ -13,7 +13,7 @@ class TestsManager(tk.Frame):
         print("TEST MANAGER CONSTRUCTED")
 
         self.report = None
-        self.selected_test = None
+        # self.selected_test = None
 
         # ttk.Label(self, text="THIS IS THE TEST MANAGER!").pack()
         
@@ -62,7 +62,17 @@ class TestsManager(tk.Frame):
         self.refresh_ui()
     
     def remove_test(self):
-        pass
+        if not self.report:
+            mb.showerror('Remove Test Error', 'You must open or create a test report before removing tests.\nFile -> New Report\nFile -> Open Report')
+            return
+        
+        cat_del = self.report.selected_test.category
+        name_del = self.report.selected_test.name
+
+        self.report.remove_test(cat_del, name_del)
+        self.refresh_ui()
+        
+
     
 
     def on_tree_select(self, event):
@@ -106,12 +116,20 @@ class TestsManager(tk.Frame):
 
     def refresh_ui(self):
 
+        if not self.report:
+            return
+
+        # save the open categories
+        open_categories = set()
+        for item in self.test_tree.get_children():
+            if self.test_tree.item(item, 'open'):
+                open_categories.add(self.test_tree.item(item, 'text'))
+
+
         # clear existing items
         for item in self.test_tree.get_children():
             self.test_tree.delete(item)
 
-        if not self.report:
-            return
         
         # group tests by category
         category_map = {}
@@ -121,7 +139,7 @@ class TestsManager(tk.Frame):
 
             # create category group if not already added
             if category not in category_map:
-                parent_id = self.test_tree.insert('', 'end', text=category)
+                parent_id = self.test_tree.insert('', 'end', text=category, open=(category in open_categories))
                 category_map[category] = parent_id
 
             # add test as child under that category

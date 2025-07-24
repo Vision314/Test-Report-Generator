@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import tksheet
 
 
 from model.test_report import TestReport
@@ -30,6 +31,8 @@ class TestEditor(tk.Frame):
         spec_button = ttk.Button(toolbar, text='Sp', width=5, command=self.add_Sp)
         spec_button.pack(side=tk.LEFT, padx=2, pady=2)
 
+        open_file_button = ttk.Button(toolbar, text='OPEN REPORT', width=10, command=)
+
         
         self.test_name_label = ttk.Label(self, text="Please create or open a test report.")
         self.test_name_label.pack(side=tk.TOP, padx=5, pady=5)
@@ -40,6 +43,11 @@ class TestEditor(tk.Frame):
         self.metadata_bar.pack(side=tk.TOP, pady=10)
 
         self.metadata_button_dict = {}
+
+
+        self.sheet = tksheet.Sheet(self)
+        self.sheet.pack(fill='both', expand=True)
+
 
 
 
@@ -122,3 +130,13 @@ class TestEditor(tk.Frame):
                 butt.pack(side=tk.LEFT)
 
         print(self.metadata_button_dict.keys())
+        print(self.report.get_CC())
+
+        self.sheet.set_sheet_data([], reset_col_positions=True, reset_row_positions=True)
+        df = self.report.get_root_table()
+        self.sheet.set_sheet_data(df.values.tolist())
+        self.sheet.headers(df.columns.tolist())
+        
+
+        print(self.report.get_root_table().head(5))
+        self.sheet.pack(fill='both', expand=True)

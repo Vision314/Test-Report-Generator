@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 
+from pathlib import Path
+
+
 class CCDialog(tk.Toplevel):
     def __init__(self, parent, on_submit, existing_name_var='', existing_values_var=''):
         super().__init__(parent)
@@ -8,8 +11,17 @@ class CCDialog(tk.Toplevel):
         self.title("Add Column Condition")
         self.on_submit = on_submit
 
+        # load logo.png from assets/
+        logo_path = Path(__file__).parent.parent.parent / "assets" / "logo.png"
+        logo_img = tk.PhotoImage(file=logo_path)
+        # set it as window icon
+        self.iconphoto(False, logo_img)
+        self._icon_img = logo_img # prevent image from being garbage collected
+
         # self.existing_name_var = existing_name_var
         # self.existing_values_var = existing_values_var
+
+        evv = ', '.join(existing_values_var)
 
         self.name_var = tk.StringVar()
         self.values_var = tk.StringVar()
@@ -22,7 +34,7 @@ class CCDialog(tk.Toplevel):
         ttk.Label(self, text="Values *comma separated* :").pack(padx=10, pady=(10, 2))
         e2 = ttk.Entry(self, textvariable=self.values_var)
         e2.pack(padx=10)
-        e2.insert(0, existing_values_var)
+        e2.insert(0, evv)
 
         ttk.Button(self, text="Submit", command=self.submit).pack(pady=10)
 
