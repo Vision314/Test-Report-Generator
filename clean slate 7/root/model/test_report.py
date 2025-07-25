@@ -50,6 +50,9 @@ class TestReport():
     def add_CC(self, name: str = '', values=None):
         self.selected_test.add_CC(name, values)
 
+    def edit_CC(self, col_tag='', new_name='', new_values=None):
+        self.selected_test.edit_CC(col_tag, new_name, new_values)
+
     def add_Re(self, name: str = ''):
         self.selected_test.add_Re(name)
 

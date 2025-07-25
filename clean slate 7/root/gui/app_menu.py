@@ -39,6 +39,8 @@ class AppMenu(tk.Menu):
             return # user cancelled
         
         report = TestReport(title=title)
+
+        
         
 
         try:
@@ -52,6 +54,8 @@ class AppMenu(tk.Menu):
         self.parent.test_editor.set_report(report)
         self.parent.equipment_manager.set_report(report)
         self.parent.cover_page_manager.set_report(report)
+
+        self.master.refresh_all()
 
     def save(self):
         self.parent.report.pickle(self.parent.filepath)

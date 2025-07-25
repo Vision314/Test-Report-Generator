@@ -21,7 +21,14 @@ class Test():
 
     @property
     def column_condition_combos(self):
-        cc_vals = list(self.column_conditions.values())
+        
+        cc_vals = []
+
+        for tag in self.metadata.keys():
+            if tag.startswith('CC'):
+                name = self.metadata[tag]
+                cc_vals.append(self.column_conditions[name])    
+
         cc_combos = list(product(*cc_vals))
         return cc_combos
 
@@ -32,27 +39,96 @@ class Test():
             cc_number = sum(1 for k in self.metadata if 'CC' in k) + 1
             self.metadata[f'CC{cc_number}'] = name
 
+        
         new_length = len(self.column_condition_combos)
         for re_name in self.results:
             self.results[re_name] = self._resize_result_list(self.results[re_name], new_length)
 
         self.build_table()
 
-    def _resize_result_list(self, result_list, new_length, placeholder='--'):
+    def edit_CC(self, col_tag, new_name: str='', new_values=None):
+        # get old name
+        # change value in metdata
+        # remove the column and values from column_conditions dict
+        # append a new column with the new name and new values
+            # metadata holds order of df
+        # build_table()
+
+        print("\n\n")
+        print(f"EDITING COLUMN: {col_tag}")
+
+
+        # get the old name
+        old_name = self.metadata[col_tag]
+
+        print(f"OLD NAME: {old_name}\tNEW NAME: {new_name}")
+        print(f"OLD METADATA: {self.metadata}")
+        # change the value in the METADATA (keeping same order in df)
+        self.metadata[col_tag] = new_name
+        print(f"NEW METADATA: {self.metadata}")
+
+        print(f"OLD COLUMN CONDITIONS: {self.column_conditions}")
+
+
+        # remove the old column
+        self.column_conditions.pop(old_name)
+
+        print(f"REMOVED {col_tag} COLUMN CONDITIONS: {self.column_conditions}")
+
+        # insert the new column at the end, doesn't matter because
+        # metadata holds order of df
+        self.column_conditions[new_name] = new_values
+
+        print(f"NEW COLUMN CONDITIONS: {self.column_conditions}")
+
+        print("\n\n")
+
+        self.build_table()
+
+
+
+
+    def del_CC(self, name: str=''):
+        del self.column_conditions[name]
+
+        new_length = len(self.column_condition_combos)
+        for re_name in self.results:
+            self.results[re_name] = self._resize_result_list(self.results[re_name], new_length)
+
+        self.build_table()
+
+    def _resize_result_list(self, result_list, new_length, placeholder=''):
         current_length = len(result_list)
         if current_length < new_length:
             result_list.extend([placeholder] * (new_length - current_length))
+
+        elif current_length > new_length:
+            result_list = result_list[:new_length]
         return result_list
 
     def add_Re(self, name: str = ''):
-        self.results[name] = ['--'] * len(self.column_condition_combos)
+        # commented out for result test
+        # self.results[name] = ['--'] * len(self.column_condition_combos)
+        self.results[name] = []
 
         if name not in self.metadata.values():
             re_number = sum(1 for k in self.metadata if 'Re' in k) + 1
             self.metadata[f'Re{re_number}'] = name
 
-        self.results[name] = ['--'] * len(self.column_condition_combos)
+        # commented out for result test
+        self.results[name] = [''] * len(self.column_condition_combos)
         self.build_table()
+
+    def edit_Re_name(self, col_tag, new_name: str = ''):
+        # 1. get old name
+        old_name = self.results[col_tag]
+        # 2. change value in metdata
+        self.metadata[col_tag] = new_name
+        # 3. remove the column and values from column_conditions dict
+        
+        # append a new column with the new name and new values
+            # metadata holds order of df
+        # build_table()
 
     def add_Ca(self, name: str = '', formula: str = ''):
 
@@ -68,25 +144,6 @@ class Test():
             ca_number = sum(1 for k in self.metadata if k.startswith('Ca')) + 1
             self.metadata[f'Ca{ca_number}'] = name
 
-        self.build_table()
-
-    def add_Sp(self, name: str = '', specifications=None):
-        if specifications is None:
-            raise ValueError("Specifications list is required.")
-
-        expected_length = len(self.column_condition_combos)
-        if len(specifications) != expected_length:
-            raise ValueError(f"Length of specifications ({len(specifications)}) does not match number of test cases ({expected_length}).")
-
-        # Add to specifications dictionary
-        self.specifications[name] = specifications
-
-        # Register metadata
-        if name not in self.metadata.values():
-            sp_number = sum(1 for k in self.metadata if k.startswith('Sp')) + 1
-            self.metadata[f'Sp{sp_number}'] = name
-
-        # Rebuild the table
         self.build_table()
 
 
@@ -163,6 +220,7 @@ class Test():
 
     def build_table(self):
         combos = self.column_condition_combos
+        print(f"THESE ARE THE CC COMBOS:\n{combos}")
         num_rows = len(combos)
         df = pd.DataFrame(index=range(num_rows))
 
@@ -171,11 +229,12 @@ class Test():
 
             if tag.startswith('CC'):
                 cc_index = int(tag[2:]) - 1
+                # cc_index = list(self.column_conditions.keys()).index(col_name)
                 col_values = [combo[cc_index] for combo in combos]
                 df[col_name] = col_values
 
             elif tag.startswith('Re'):
-                df[col_name] = self.results.get(col_name, ['--'] * num_rows)
+                df[col_name] = self.results.get(col_name, [''] * num_rows)
 
             elif tag.startswith('Ca'):
                 formula = self.calculations.get(col_name, '')
@@ -189,3 +248,7 @@ class Test():
                 df[col_name] = [None] * num_rows
 
         self.root_table = df
+
+
+    def manual_table_input(self):
+        pass

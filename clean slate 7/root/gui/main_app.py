@@ -80,3 +80,4 @@ class MainApp(tk.Tk):
         self.test_editor.refresh_ui()
         self.equipment_manager.refresh_ui()
         self.cover_page_manager.refresh_ui()
+        print(f"\n\n\n\nTHIS IS THE FOCUS: {self.focus_displayof()}\n\n\n\n")
