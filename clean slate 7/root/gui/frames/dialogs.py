@@ -5,13 +5,14 @@ from pathlib import Path
 
 
 class CCDialog(tk.Toplevel):
-    def __init__(self, parent, on_submit, col_tag, existing_name_var='', existing_values_var=''):
+    def __init__(self, parent, on_submit, on_delete=None, col_tag: str='', existing_name_var='', existing_values_var=''):
         super().__init__(parent)
 
         #------------------------------------
         # set stuff for window popup
         self.title("Add Column Condition")
         self.on_submit = on_submit
+        self.on_delete = on_delete
         self.col_tag = col_tag
 
         # load logo.png from assets/
@@ -70,18 +71,21 @@ class CCDialog(tk.Toplevel):
         self.destroy()
 
     def delete(self):
-        pass
+        self.on_delete(self.col_tag)
+        print('DELTE HIT!')
+        self.destroy()
 
 
 
 class ReDialog(tk.Toplevel):
-    def __init__(self, parent, on_submit, col_tag, existing_name_var=''):
+    def __init__(self, parent, on_submit, on_delete=None, col_tag: str='', existing_name_var=''):
         super().__init__(parent)
 
         #------------------------------------
         # set stuff for window popup
         self.title("Add Resilt Column")
         self.on_submit = on_submit
+        self.on_delete = on_delete
         self.col_tag = col_tag
 
         # load logo.png from assets/
@@ -123,4 +127,9 @@ class ReDialog(tk.Toplevel):
         else:
             self.on_submit(self.col_tag, name, '')
 
+        self.destroy()
+
+    def delete(self):
+        self.on_delete(self.col_tag)
+        print('DELTE HIT!')
         self.destroy()

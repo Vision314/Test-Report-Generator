@@ -22,7 +22,11 @@ class AppMenu(tk.Menu):
         file_menu.add_separator()
         file_menu.add_command(label='Exit', command=self.parent.quit)
 
+        edit_menu = tk.Menu(self, tearoff=0)
+        edit_menu.add_command(label='Refresh UI', command=self.parent.refresh_all)
+
         self.add_cascade(label='File', menu=file_menu)
+        self.add_cascade(label='Edit', menu=edit_menu)
 
     def new_report(self):
         title = sd.askstring("New Report", "Enter a title for the new report:")
@@ -54,6 +58,7 @@ class AppMenu(tk.Menu):
         self.parent.test_editor.set_report(report)
         self.parent.equipment_manager.set_report(report)
         self.parent.cover_page_manager.set_report(report)
+        self.parent.image_viewer.set_report(report)
 
         self.master.refresh_all()
 

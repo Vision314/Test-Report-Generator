@@ -53,8 +53,20 @@ class TestReport():
     def edit_CC(self, col_tag='', new_name='', new_values=None):
         self.selected_test.edit_CC(col_tag, new_name, new_values)
 
+    def del_CC(self, col_tag):
+        self.selected_test.del_CC(col_tag)
+
     def add_Re(self, name: str = ''):
         self.selected_test.add_Re(name)
+
+    def edit_Re_name(self, col_tag, new_name):
+        self.selected_test.edit_Re_name(col_tag, new_name)
+
+    def del_Re(self, col_tag):
+        self.selected_test.del_Re(col_tag)
+
+    def edit_Re_val(self, name, row, value):
+        self.selected_test.edit_Re_val(name, row, value)
 
     def add_Ca(self, name: str = '', formula: str = ''):
         self.selected_test.add_Ca(name, formula)

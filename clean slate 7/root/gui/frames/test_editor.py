@@ -3,6 +3,11 @@ from tkinter import ttk
 import tksheet
 import pandas as pd
 
+from tksheet import (
+    Sheet,
+    num2alpha,
+)
+
 from model.test_report import TestReport
 from gui.frames.dialogs import CCDialog, ReDialog
 
@@ -44,31 +49,65 @@ class TestEditor(tk.Frame):
 
 
 
+
+
         self.metadata_bar = ttk.Frame(self, relief=tk.RAISED, width=300, height=25)
         self.metadata_bar.pack(side=tk.TOP, pady=10)
 
         self.metadata_button_dict = {}
 
+        
 
         self.sheet = tksheet.Sheet(self)
         
         
 
 
-        self.sheet.enable_bindings((
-                                    "single_click_edit",
-                                    "edit_cell",
-                                    "arrowkeys",
-                                    "copy", "cut", "paste",
-                                    "right_click_popup_menu",
-                                    "rc_select",
-                                    "rc_insert_row",
-                                    "rc_delete_row",
-                                    "rc_delete_column"
-                                ))
-        # self.sheet.focus_set()
+        self.sheet.enable_bindings()
+        
+        self.sheet.bulk_table_edit_validation(self.validate_bulk_edits)
+        self.sheet.extra_bindings([("all_select_events", self.sheet_select_event)])
+
+        
+    def validate_bulk_edits(self, event: dict):
+        """
+        Called after user attempts any edit (typing, paste, cut, etc).
+        Only changes left in event['data'] will be committed.
+        """
+
+        print("🔧 Validation triggered.")
+        for (row, col), new_value in event["data"].items():
+            old_value = self.sheet.get_cell_data(row, col)
+            print(f"📌 Cell ({row}, {col}) changed: '{old_value}' ➜ '{new_value}'")
+
+            name = self.report.get_root_table().columns[col]
+
+            self.report.edit_Re_val(name, row, new_value)
+
+        # Example: block any edits that include "block"
+        event["data"] = {
+            k: v for k, v in event["data"].items()
+            if "block" not in v
+        }
+
+    def sheet_select_event(self, event = None):
+        if event.eventname == "select" and event.selection_boxes and event.selected:
+            # get the most recently selected box in case there are multiple
+            box = next(reversed(event.selection_boxes))
+            type_ = event.selection_boxes[box]
+            if type_ == "cells":
+                self.master.status_label.config(text=f"{type_.capitalize()}: {box.from_r + 1},{box.from_c + 1} : {box.upto_r},{box.upto_c}")
+                r = box.from_r
+                c = box.from_c
 
 
+
+            elif type_ == "rows":
+                self.master.status_label.config(text=f"{type_.capitalize()}: {box.from_r + 1} : {box.upto_r}")
+            elif type_ == "columns":
+                self.master.status_label.config(text=f"{type_.capitalize()}: {num2alpha(box.from_c)} : {num2alpha(box.upto_c - 1)}")
+        else:
+            self.master.status_label.config(text="")
 
     def add_CC(self):
         if not self.report or self.report.tests == []:
@@ -96,7 +135,7 @@ class TestEditor(tk.Frame):
             self.report.add_Re(name)
             self.refresh_ui()
 
-        ReDialog(self, on_submit, '')
+        ReDialog(self, on_submit, col_tag='')
 
         print("HIT!")
         print(self.report.get_CC())
@@ -121,22 +160,27 @@ class TestEditor(tk.Frame):
                 self.refresh_ui()
 
             def on_delete(col_tag):
-                pass
+                self.report.del_CC(col_tag)
+                self.refresh_ui()
 
             name = self.report.get_metadata()[col_tag]
             values = self.report.get_CC()[name]
 
 
-            CCDialog(self, on_submit, col_tag, name, values)
+            CCDialog(self, on_submit, on_delete, col_tag, name, values)
 
         elif 'Re' in col_tag:
             
             def on_submit(col_tag, new_name, new_values):
-                self.report.edit_Re(col_tag, new_name)
+                self.report.edit_Re_name(col_tag, new_name)
+                self.refresh_ui()
+
+            def on_delete(col_tag):
+                self.report.del_Re(col_tag)
                 self.refresh_ui()
 
             name = self.report.get_metadata()[col_tag]
-            ReDialog(self, on_submit, col_tag, name)
+            ReDialog(self, on_submit, on_delete, col_tag, name)
     
 
 
@@ -153,7 +197,7 @@ class TestEditor(tk.Frame):
             return
         
         # delete all the metadata buttons to be re-written in the next step
-        for widget in self.metadata_bar.winfo_children():
+        for widget in self.metadata_bar.winfo_children(): #except for refresh button
             widget.destroy()
 
 
@@ -166,6 +210,9 @@ class TestEditor(tk.Frame):
         if self.report.tests == []:
             self.test_name_label.config(text='Please add a new test')
         else:
+
+
+
             self.test_name_label.config(text=f"Test Name: {self.report.selected_test.name}")
                 
         
@@ -193,10 +240,14 @@ class TestEditor(tk.Frame):
             print(self.report.get_root_table().head(5))
         self.sheet.pack(fill='both', expand=True)
 
+        
+
         # self.after(100, lambda: self.sheet.focus_set())
         print(f"\n\n\n\nTHIS IS THE FOCUS: {self.focus_displayof()}\n\n\n\n")
         print(f"sheet data: {self.sheet.get_column_data(0)}")
 
         self.sheet.enable_bindings("all")
+
+
         
         self.sheet.focus_set()

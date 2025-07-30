@@ -11,6 +11,7 @@ from gui.frames.cover_page_manager import CoverPageManager
 from gui.frames.equipment_manager import EquipmentManager
 from gui.frames.test_editor import TestEditor
 from gui.frames.test_manager import TestsManager
+from gui.frames.image_viewer import ImageViewer
 from gui.app_menu import AppMenu
 
 
@@ -60,7 +61,7 @@ class MainApp(tk.Tk):
         main_paned.add(self.tests_manager, weight=1)# left panel (test_manager)
 
         middle_paned = ttk.PanedWindow(main_paned, orient=tk.VERTICAL)
-        main_paned.add(middle_paned, weight=3) # wider weight for right side
+        main_paned.add(middle_paned, weight=10) # wider weight for middle
 
         self.test_editor = TestEditor(self)
         self.equipment_manager = EquipmentManager(self)
@@ -69,9 +70,19 @@ class MainApp(tk.Tk):
         middle_paned.add(self.equipment_manager, weight=1)
 
         self.cover_page_manager = CoverPageManager(self)
+        self.image_viewer = ImageViewer(self)
         
 
-        main_paned.add(self.cover_page_manager, weight=1)
+        right_paned = ttk.PanedWindow(main_paned, orient=tk.VERTICAL)
+        main_paned.add(right_paned, weight=1)
+
+        right_paned.add(self.cover_page_manager, weight=1)
+        right_paned.add(self.image_viewer, weight=1)
+
+        self.status_label = tk.Label(self, text='TEXT HERE', relief='sunken', anchor='w', bd=1)
+        self.status_label.pack(side=tk.BOTTOM, fill=tk.BOTH)
+
+        # main_paned.add(self.cover_page_manager, weight=1)
 
 
 
@@ -80,4 +91,5 @@ class MainApp(tk.Tk):
         self.test_editor.refresh_ui()
         self.equipment_manager.refresh_ui()
         self.cover_page_manager.refresh_ui()
+        # self.image_viewer.refresh_ui()
         print(f"\n\n\n\nTHIS IS THE FOCUS: {self.focus_displayof()}\n\n\n\n")

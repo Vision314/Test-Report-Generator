@@ -36,7 +36,10 @@ class Test():
         self.column_conditions[name] = values
 
         if name not in self.metadata.values():
-            cc_number = sum(1 for k in self.metadata if 'CC' in k) + 1
+            # cc_number = sum(1 for k in self.metadata if 'CC' in k) + 1
+            # cc_number = greates tag # for CC's
+            cc_number = str(max((int(tag[2:]) for tag in self.metadata if tag.startswith('CC')), default=0) + 1)
+            print(f"\n\nTHIS IS THE CCNUMBER: {cc_number}\n\n")
             self.metadata[f'CC{cc_number}'] = name
 
         
@@ -83,17 +86,31 @@ class Test():
 
         print("\n\n")
 
+        new_length = len(self.column_condition_combos)
+        for re_name in self.results:
+            self.results[re_name] = self._resize_result_list(self.results[re_name], new_length)
+
+
         self.build_table()
 
 
 
 
-    def del_CC(self, name: str=''):
+    def del_CC(self, col_tag):
+        name = self.metadata[col_tag]
+
         del self.column_conditions[name]
+        del self.metadata[col_tag]
 
         new_length = len(self.column_condition_combos)
         for re_name in self.results:
             self.results[re_name] = self._resize_result_list(self.results[re_name], new_length)
+
+        print("\n\n\n DEBUG BUILD:")
+        print(f"COMBOS: {self.column_condition_combos}")
+        print(f"CONDITIONS: {self.column_conditions}")
+        print(f"\nMETADATA: {self.metadata}")
+
 
         self.build_table()
 
@@ -121,14 +138,31 @@ class Test():
 
     def edit_Re_name(self, col_tag, new_name: str = ''):
         # 1. get old name
-        old_name = self.results[col_tag]
+        old_name = self.metadata[col_tag]
+        old_values = self.results[old_name]
         # 2. change value in metdata
         self.metadata[col_tag] = new_name
-        # 3. remove the column and values from column_conditions dict
-        
-        # append a new column with the new name and new values
+        # 3. remove the column and values from results dict
+        self.results.pop(old_name)
+
+        # append a new column with the new name and original values
             # metadata holds order of df
-        # build_table()
+
+        self.results[new_name] = old_values
+        self.build_table()
+
+    def del_Re(self, col_tag):
+        name = self.metadata[col_tag]
+
+        del self.results[name]
+        del self.metadata[col_tag]
+
+        self.build_table()
+
+    def edit_Re_val(self, name, row, value):
+        self.results[name][row] = value
+        print(f"RESULTS: {self.results}")
+        self.build_table()
 
     def add_Ca(self, name: str = '', formula: str = ''):
 
@@ -223,18 +257,21 @@ class Test():
         print(f"THESE ARE THE CC COMBOS:\n{combos}")
         num_rows = len(combos)
         df = pd.DataFrame(index=range(num_rows))
-
+        cc_index = 0
         for tag in self.metadata.keys():
             col_name = self.metadata[tag]
 
             if tag.startswith('CC'):
-                cc_index = int(tag[2:]) - 1
+                # cc_index = int(tag[2:]) - 1
+                
+                print(f"\nCC_INDEX: {cc_index}\n")
                 # cc_index = list(self.column_conditions.keys()).index(col_name)
                 col_values = [combo[cc_index] for combo in combos]
                 df[col_name] = col_values
+                cc_index+=1
 
             elif tag.startswith('Re'):
-                df[col_name] = self.results.get(col_name, [''] * num_rows)
+                df[col_name] = self.results[col_name]
 
             elif tag.startswith('Ca'):
                 formula = self.calculations.get(col_name, '')
@@ -249,6 +286,7 @@ class Test():
 
         self.root_table = df
 
+        print(self.root_table.head())
 
     def manual_table_input(self):
         pass
