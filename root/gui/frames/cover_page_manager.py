@@ -8,13 +8,20 @@ from model.test_report import TestReport
 class CoverPageManager(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
-        print("COVER PAGE MANAGER CONSTRUCTED")
+        
         self.report = None
 
-        ttk.Label(self, text="THIS IS THE COVER PAGE MANAGER!").pack()
+        title_bar = ttk.Frame(self, relief='solid')
+        title_bar.pack(side=tk.TOP, fill='x')
+        title = ttk.Label(title_bar, text="Cover Page Manager")
+        title.pack(pady=5, padx=5, anchor='w')
+
         
 
-    
+
+    def add_
+
+
     def set_report(self, report: TestReport):
         self.report = report
         self.refresh_ui()

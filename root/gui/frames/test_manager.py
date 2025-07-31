@@ -16,6 +16,11 @@ class TestsManager(tk.Frame):
         # self.selected_test = None
 
         # ttk.Label(self, text="THIS IS THE TEST MANAGER!").pack()
+
+        title_bar = ttk.Frame(self, relief='solid')
+        title_bar.pack(side=tk.TOP, fill='x')
+        title = ttk.Label(title_bar, text="Test Manager")
+        title.pack(side=tk.LEFT, padx=5, pady=5)
         
         toolbar = ttk.Frame(self, relief=tk.RAISED, borderwidth=1)
         toolbar.pack(side=tk.TOP, fill=tk.X)

@@ -20,6 +20,10 @@ class TestEditor(tk.Frame):
 
         self.report = None
 
+        title_bar = ttk.Frame(self, relief='solid')
+        title_bar.pack(side=tk.TOP, fill='x')
+        title = ttk.Label(title_bar, text="Test Editor    --")
+        title.pack(side=tk.LEFT, padx=5)
 
         toolbar = ttk.Frame(self, relief=tk.RAISED, borderwidth=1)
         toolbar.pack(side=tk.TOP, fill=tk.X)
@@ -44,8 +48,8 @@ class TestEditor(tk.Frame):
 
 
         
-        self.test_name_label = ttk.Label(self, text="Please create or open a test report.")
-        self.test_name_label.pack(side=tk.TOP, padx=5, pady=5)
+        self.test_name_label = ttk.Label(title_bar, text="Please create or open a test report.")
+        self.test_name_label.pack(side=tk.LEFT, padx=5, pady=5)
 
 
 

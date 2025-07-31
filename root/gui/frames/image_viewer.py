@@ -10,20 +10,25 @@ class ImageViewer(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
         
-        ttk.Label(self, text='IMAGE VIEWER CONSTRUCTED').pack()
-        self.info_label = ttk.Label(self, text='Click a cell to view info')
-        self.info_label.pack()
+        title_bar = ttk.Frame(self, relief='solid')
+        title_bar.pack(side=tk.TOP, fill='x')
+        title = ttk.Label(title_bar, text="Image Viewer")
+        title.pack(pady=5, padx=5, anchor='w')
 
         self.report = None
 
         toolbar = ttk.Frame(self, relief=tk.RAISED, borderwidth=1)
-        toolbar.pack(side=tk.TOP)
+        toolbar.pack(side=tk.TOP, fill='x')
 
-        add_image_button = ttk.Button(toolbar, text='ADD', command=self.add_image).pack(side=tk.RIGHT)
-        replace_image_button = ttk.Button(toolbar, text='REPLACE', command=self.replace_image).pack(side=tk.RIGHT)
-        remove_image_button = ttk.Button(toolbar, text='DEL', command=self.remove_image).pack(side=tk.RIGHT)
-        expand_image_button = ttk.Button(toolbar, text='SAVE', command=self.expand_image).pack(side=tk.RIGHT)
+        add_image_button = ttk.Button(toolbar, text='ADD', command=self.add_image).pack(side=tk.LEFT, pady=2, padx=2)
+        replace_image_button = ttk.Button(toolbar, text='REPLACE', command=self.replace_image).pack(side=tk.LEFT, pady=2, padx=2)
+        remove_image_button = ttk.Button(toolbar, text='DEL', command=self.remove_image).pack(side=tk.LEFT, pady=2, padx=2)
+        expand_image_button = ttk.Button(toolbar, text='SAVE', command=self.expand_image).pack(side=tk.LEFT, pady=2, padx=2)
         
+        ttk.Label(self, text='IMAGE VIEWER CONSTRUCTED').pack()
+        self.info_label = ttk.Label(self, text='Click a cell to view info')
+        self.info_label.pack()
+
 
     def add_image(self):
         pass
