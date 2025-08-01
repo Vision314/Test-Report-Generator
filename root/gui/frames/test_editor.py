@@ -20,36 +20,44 @@ class TestEditor(tk.Frame):
 
         self.report = None
 
-        title_bar = ttk.Frame(self, relief='solid')
-        title_bar.pack(side=tk.TOP, fill='x')
-        title = ttk.Label(title_bar, text="Test Editor    --")
-        title.pack(side=tk.LEFT, padx=5)
+        # Header area (like a group label)
+        self.header = ttk.Label(
+            self, 
+            text="⚡ Test Editor", 
+            anchor="w",
+            font=("Segoe UI", 10, "bold"),
+            background="#e0e0e0",
+            relief="raised"
+        )
+        self.header.pack(fill=tk.X)
 
-        toolbar = ttk.Frame(self, relief=tk.RAISED, borderwidth=1)
-        toolbar.pack(side=tk.TOP, fill=tk.X)
+        # toolbar = ttk.Frame(self, relief=tk.RAISED, borderwidth=1)
+        toolbar = ttk.Frame(self)
+        toolbar.pack(fill=tk.X)
+        toolbar.configure(style="Toolbar.TFrame")
 
-        col_cond_button = ttk.Button(toolbar, text='CC', width=5, command=self.add_CC)
-        col_cond_button.pack(side=tk.LEFT, padx=2, pady=2)
+        col_cond_button = ttk.Button(toolbar, text='CC', style='ToolButton.TButton', command=self.add_CC)
+        col_cond_button.pack(side=tk.LEFT, padx=1, pady=2)
 
-        res_button = ttk.Button(toolbar, text='Re', width=5, command=self.add_Re)
-        res_button.pack(side=tk.LEFT, padx=2, pady=2)
+        res_button = ttk.Button(toolbar, text='Re', style='ToolButton.TButton', command=self.add_Re)
+        res_button.pack(side=tk.LEFT, padx=1, pady=2)
 
-        calc_button = ttk.Button(toolbar, text='Ca', width=5, command=self.add_Ca)
-        calc_button.pack(side=tk.LEFT, padx=2, pady=2)
+        calc_button = ttk.Button(toolbar, text='Ca', style='ToolButton.TButton', command=self.add_Ca)
+        calc_button.pack(side=tk.LEFT, padx=1, pady=2)
 
-        spec_button = ttk.Button(toolbar, text='Sp', width=5, command=self.add_Sp)
-        spec_button.pack(side=tk.LEFT, padx=2, pady=2)
+        spec_button = ttk.Button(toolbar, text='Sp', style='ToolButton.TButton', command=self.add_Sp)
+        spec_button.pack(side=tk.LEFT, padx=1, pady=2)
 
-        open_report_button = ttk.Button(toolbar, text='OPEN REPORT', width=20, command=self.master.menu.open_report)
-        open_report_button.pack(side=tk.RIGHT)
+        open_report_button = ttk.Button(toolbar, text='OPEN REPORT', style='ToolButton.TButton', command=self.master.menu.open_report)
+        open_report_button.pack(side=tk.RIGHT, padx=3, pady=2)
 
-        new_report_button = ttk.Button(toolbar, text='NEW REPORT', width=20, command=self.master.menu.new_report)
-        new_report_button.pack(side=tk.RIGHT)
+        new_report_button = ttk.Button(toolbar, text='NEW REPORT', style='ToolButton.TButton', command=self.master.menu.new_report)
+        new_report_button.pack(side=tk.RIGHT, padx=3, pady=2)
 
 
         
-        self.test_name_label = ttk.Label(title_bar, text="Please create or open a test report.")
-        self.test_name_label.pack(side=tk.LEFT, padx=5, pady=5)
+        # self.test_name_label = ttk.Label(title_bar, text="Please create or open a test report.")
+        # self.test_name_label.pack(side=tk.LEFT, padx=5, pady=5)
 
 
 
@@ -197,7 +205,8 @@ class TestEditor(tk.Frame):
         
 
         if not self.report:
-            self.test_name_label.config(text="Please create or open a test report.")
+            # self.test_name_label.config(text="Please create or open a test report.")
+            self.header.config(text='⚡ Test Editor  --  Please create or open a test report')
             return
         
         # delete all the metadata buttons to be re-written in the next step
@@ -212,13 +221,16 @@ class TestEditor(tk.Frame):
 
         # update the name of the test
         if self.report.tests == []:
-            self.test_name_label.config(text='Please add a new test')
+            # self.test_name_label.config(text='Please add a new test')
+            self.header.config(text='⚡ Test Editor  --  Please add a new test')
+
         else:
 
 
 
-            self.test_name_label.config(text=f"Test Name: {self.report.selected_test.name}")
-                
+            # self.test_name_label.config(text=f"Test Name: {self.report.selected_test.name}")
+            self.header.config(text=f'⚡ Test Editor  --  Test Name: {self.report.selected_test.name}')
+
         
             # create the dict of buttons
             for key in self.report.get_metadata().keys():

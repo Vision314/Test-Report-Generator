@@ -11,15 +11,25 @@ class CoverPageManager(tk.Frame):
         
         self.report = None
 
-        title_bar = ttk.Frame(self, relief='solid')
-        title_bar.pack(side=tk.TOP, fill='x')
-        title = ttk.Label(title_bar, text="Cover Page Manager")
-        title.pack(pady=5, padx=5, anchor='w')
+        # Header area (like a group label)
+        header = ttk.Label(
+            self, 
+            text="📃 Cover Page Manager", 
+            anchor="w",
+            font=("Segoe UI", 10, "bold"),
+            background="#e0e0e0",
+            relief="raised"
+        )
+        header.pack(fill=tk.X)
 
-        
 
 
-    def add_
+
+
+    def add_spec(self):
+        pass
+    def rem_spec(self):
+        pass
 
 
     def set_report(self, report: TestReport):

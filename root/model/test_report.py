@@ -109,10 +109,18 @@ class TestReport():
     def get_root_table(self):
         return self.selected_test.root_table
 
+    # ------------- Test Setter Functions ---------
 
+    def set_test_name(self, name):
+        self.selected_test.name = name
 
+    def set_cat_name(self, cat):
+        self.selected_test.category = cat
 
-
+    def rename_category(self, old_cat, new_cat):
+        for test in self.tests:
+            if test.category == old_cat:
+                test.category = new_cat
 
 
     def reference_cp_gen_specs(self):

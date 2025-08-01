@@ -11,6 +11,8 @@ class CoverPage():
                             'S/N',
                             'Last Calibrated',
                             'Calibration Due'])
+
+
         self.general_specifications = {}
         self.testing_and_review = {'Tested By': '',
                                    'Reviewed By': '',

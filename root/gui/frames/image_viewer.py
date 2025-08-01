@@ -10,15 +10,22 @@ class ImageViewer(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
         
-        title_bar = ttk.Frame(self, relief='solid')
-        title_bar.pack(side=tk.TOP, fill='x')
-        title = ttk.Label(title_bar, text="Image Viewer")
-        title.pack(pady=5, padx=5, anchor='w')
+        # Header area (like a group label)
+        self.header = ttk.Label(
+            self, 
+            text="📷 Image Viewer", 
+            anchor="w",
+            font=("Segoe UI", 10, "bold"),
+            background="#e0e0e0",
+            relief="raised"
+        )
+        self.header.pack(fill=tk.X)
 
         self.report = None
 
-        toolbar = ttk.Frame(self, relief=tk.RAISED, borderwidth=1)
+        toolbar = ttk.Frame(self)
         toolbar.pack(side=tk.TOP, fill='x')
+        toolbar.configure(style="Toolbar.TFrame")
 
         add_image_button = ttk.Button(toolbar, text='ADD', command=self.add_image).pack(side=tk.LEFT, pady=2, padx=2)
         replace_image_button = ttk.Button(toolbar, text='REPLACE', command=self.replace_image).pack(side=tk.LEFT, pady=2, padx=2)

@@ -20,7 +20,7 @@ class MainApp(tk.Tk):
         super().__init__()
 
         style = ttk.Style()
-        style.theme_use('clam')
+        style.theme_use('default')
 
         style.configure('TPanedwindow',
                         sashwidth=10,
@@ -29,10 +29,36 @@ class MainApp(tk.Tk):
         style.configure('Treeview.Heading',
                         relief='flat',
                         background='#f0f0f0')
+        
+        
+        # Toolbar frame style
+        style.configure("Toolbar.TFrame",
+            background="#e8e8e8",
+            borderwidth=1,
+            relief="raised"
+        )
+
+        # Toolbar button style
+        style.configure("ToolButton.TButton",
+            background="#dcdcdc",
+            foreground="black",
+            font=("Segoe UI", 9),
+            padding=(6, 3),
+            relief="raised"
+        )
+
+        # Add hover effect
+        style.map("ToolButton.TButton",
+            background=[("active", "#f4f4f4")],
+            relief=[("pressed", "sunken"), ("!pressed", "raised")]
+        )
+
+
+
 
 
         self.title("Test Report Generator")
-        self.geometry("1600x600")
+        self.geometry("1300x900")
 
         # load logo.png from assets/
         logo_path = Path(__file__).parent.parent / "assets" / "logo.png"

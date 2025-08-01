@@ -17,19 +17,26 @@ class TestsManager(tk.Frame):
 
         # ttk.Label(self, text="THIS IS THE TEST MANAGER!").pack()
 
-        title_bar = ttk.Frame(self, relief='solid')
-        title_bar.pack(side=tk.TOP, fill='x')
-        title = ttk.Label(title_bar, text="Test Manager")
-        title.pack(side=tk.LEFT, padx=5, pady=5)
+        # Header area (like a group label)
+        self.header = ttk.Label(
+            self, 
+            text="🗄️Test Manager", 
+            anchor="w",
+            font=("Segoe UI", 10, "bold"),
+            background="#e0e0e0",
+            relief="raised"
+        )
+        self.header.pack(fill=tk.X)
         
-        toolbar = ttk.Frame(self, relief=tk.RAISED, borderwidth=1)
+        toolbar = ttk.Frame(self)
         toolbar.pack(side=tk.TOP, fill=tk.X)
+        toolbar.configure(style="Toolbar.TFrame")
 
-        self.add_test_button = ttk.Button(toolbar, text='ADD TEST', command=self.add_test)
-        self.add_test_button.pack(side=tk.LEFT)
+        self.add_test_button = ttk.Button(toolbar, text='➕', style='ToolButton.TButton', command=self.add_test)
+        self.add_test_button.pack(side=tk.LEFT, padx=1, pady=2)
 
-        self.remove_test_button = ttk.Button(toolbar, text='REMOVE TEST', command=self.remove_test)
-        self.remove_test_button.pack(side=tk.LEFT)
+        self.remove_test_button = ttk.Button(toolbar, text='➖', style='ToolButton.TButton', command=self.remove_test)
+        self.remove_test_button.pack(side=tk.LEFT, padx=1, pady=2)
 
 
 
@@ -47,8 +54,41 @@ class TestsManager(tk.Frame):
         self.grid_columnconfigure(1, weight=1)
 
         self.test_tree.bind("<<TreeviewSelect>>", self.on_tree_select)
+        self.test_tree.bind("<Double-1>", self.on_tree_double_click)
         
-    
+    def on_tree_double_click(self, event):
+        # Get clicked item
+        item_id = self.test_tree.identify_row(event.y)
+        if not item_id:
+            return
+
+        parent_id = self.test_tree.parent(item_id)
+        print(f"ITEM ID: {item_id}")
+        print(f"PARENT ID: {parent_id}")
+        
+        # Only proceed if it's a test, not a category
+        if parent_id:
+            old_name = self.test_tree.item(item_id, 'text')
+            category = self.test_tree.item(parent_id, 'text')
+            
+
+            new_name = sd.askstring("Rename Test", f"Enter a new name for test '{old_name}':", initialvalue=old_name, parent=self)
+
+            if new_name and new_name.strip():
+                self.report.set_test_name(new_name.strip())
+                
+            self.refresh_ui()
+
+        else:
+            old_category = self.test_tree.item(item_id, 'text')
+            print(f"OLD CATEGORY: {old_category}")
+
+            new_cat = sd.askstring("Rename Test", f"Enter a new name for category '{old_category}':", initialvalue=old_category, parent=self)
+
+            if new_cat and new_cat.strip():
+                self.report.rename_category(old_category, new_cat.strip())
+                
+            self.refresh_ui()
 
     def add_test(self):
         if not self.report:

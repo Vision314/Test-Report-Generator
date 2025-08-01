@@ -16,6 +16,7 @@ class Test():
 
         self.root_table = pd.DataFrame()
         self.equipment_used = pd.DataFrame(index=self.column_condition_combos)
+        self.checkbox_vars = []
 
         cover_page_vars = {}
 
